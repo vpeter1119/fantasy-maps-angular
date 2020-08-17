@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 
 @Component({
@@ -10,6 +11,7 @@ export class MapComponent implements OnInit {
 
   /* General Config Vars */
 
+  isLoading: boolean;
   factorx = 0.0625;
   factory = 0.0625;
   mapheight = 4096;
@@ -18,12 +20,11 @@ export class MapComponent implements OnInit {
   mapMaxZoom = 4;
   initZoom = 3;
   initCenter = L.latLng(-1942, 1294, 3);
-  mapName = "forgotten-realms";
+  mapName = this.route.snapshot.paramMap.get('index');
   customCRS: any;
   map: any;
   layerbounds: L.LatLngBounds;
-  //tileLayerString = 'http://petervertesi.com/maps/forgotten-realms/tiles/{z}-{x}-{y}.jpg';
-  tileLayerString = 'assets/forgotten-realms/tiles/{z}-{x}-{y}.jpg';
+  tileLayerString = `assets/${this.mapName}/tiles/{z}-{x}-{y}.jpg`;
   mapOptions = {
     crs: '',
     layers: [],
@@ -31,20 +32,21 @@ export class MapComponent implements OnInit {
     center: this.initCenter
   };
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.ConfigureCRS();
-    //var mapObject = this.SetUpMap();
-    //this.SetMapBounds(mapObject);
-    //this.AddTileLayer(mapObject);
   }
 
   onMapReady(map: L.Map) {
-    console.warn('Map ready.');
     this.map = map;
     this.SetMapBounds(map);
     this.AddTileLayer(map);
+    this.isLoading = false;
   }
 
   ConfigureCRS() {
@@ -83,7 +85,8 @@ export class MapComponent implements OnInit {
   }
 
   AddTileLayer(map) {
-    /* Set up Tile Layer */
+  /* Set up Tile Layer */
+    console.warn('Adding tile layer.');
     var tileLayerOptions = {
       bounds: this.layerbounds,
       tileSize: L.point(256, 256),
@@ -92,9 +95,8 @@ export class MapComponent implements OnInit {
       minZoom: this.mapMinZoom,
       maxZoom: this.mapMaxZoom,
       tms: true,
-      attribution: 'Peter Vertesi, 2020'
+      attribution: '&copy; Peter Vertesi, 2020'
     };
-
     L.tileLayer(this.tileLayerString, tileLayerOptions).addTo(map);
   }
 
