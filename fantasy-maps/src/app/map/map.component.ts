@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import * as L from 'leaflet';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -11,6 +13,8 @@ export class MapComponent implements OnInit {
 
   /* General Config Vars */
 
+  debug = !environment.production;
+  param;
   isLoading: boolean;
   factorx = 0.0625;
   factory = 0.0625;
@@ -20,34 +24,62 @@ export class MapComponent implements OnInit {
   mapMaxZoom = 4;
   initZoom = 3;
   initCenter = L.latLng(-1942, 1294, 3);
-  mapName = this.route.snapshot.paramMap.get('index');
+  mapName = '';
   customCRS: any;
   map: any;
   layerbounds: L.LatLngBounds;
-  tileLayerString = `assets/${this.mapName}/tiles/{z}-{x}-{y}.jpg`;
+  tileLayerString = '';
   mapOptions = {
     crs: '',
     layers: [],
     zoom: this.initZoom,
-    center: this.initCenter
+    center: this.initCenter,
   };
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-  ) { }
+    private titleService: Title,
+  ) {
+    // Router config
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    // Get map name
+    this.mapName = this.route.snapshot.paramMap.get('index');
+    // Set tile layer string
+    this.tileLayerString = `assets/${this.mapName}/tiles/{z}-{x}-{y}.jpg`;
+    // Add custom CRS
+    this.ConfigureCRS();
+  }
 
   ngOnInit(): void {
-    this.isLoading = true;
-    this.ConfigureCRS();
   }
 
   onMapReady(map: L.Map) {
     this.map = map;
     this.SetMapBounds(map);
-    this.AddTileLayer(map);
+    this.LoadMapContent(this.mapName);
     this.isLoading = false;
   }
+
+  LoadMapContent(mapToLoad: string) {
+    if (this.map != null) {
+      this.map.layers = [];
+    }
+    this.titleService.setTitle(`${this.mapName} | Fantasy Maps by Peter Vertesi`);
+    var newTileLayerString = `assets/${mapToLoad}/tiles/{z}-{x}-{y}.jpg`;
+    var tileLayerOptions = {
+      bounds: this.layerbounds,
+      tileSize: L.point(256, 256),
+      tolerance: 0.8,
+      noWrap: true,
+      minZoom: this.mapMinZoom,
+      maxZoom: this.mapMaxZoom,
+      tms: true,
+      attribution: '&copy; Peter Vertesi, 2020'
+    };
+    let newTileLayer = L.tileLayer(newTileLayerString, tileLayerOptions);
+    newTileLayer.addTo(this.map);
+  };
 
   ConfigureCRS() {
     /* Configure custom CRS */
@@ -82,27 +114,6 @@ export class MapComponent implements OnInit {
     var ne = map.unproject([this.mapwidth, 0], 4);
     this.layerbounds = new L.LatLngBounds(sw, ne);
     map.setMaxBounds(this.layerbounds);
-  }
-
-  AddTileLayer(map) {
-  /* Set up Tile Layer */
-    console.warn('Adding tile layer.');
-    var tileLayerOptions = {
-      bounds: this.layerbounds,
-      tileSize: L.point(256, 256),
-      tolerance: 0.8,
-      noWrap: true,
-      minZoom: this.mapMinZoom,
-      maxZoom: this.mapMaxZoom,
-      tms: true,
-      attribution: '&copy; Peter Vertesi, 2020'
-    };
-    L.tileLayer(this.tileLayerString, tileLayerOptions).addTo(map);
-  }
-
-  Test(event) {
-    //console.warn(this.LatLngToCoordinates(event.latlng));
-    console.warn(event);
   }
 
   LatLngToCoordinates(original: L.LatLng) {

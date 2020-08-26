@@ -1,6 +1,5 @@
-<div style="height: 100vh;"
+<div style="height: calc(100vh - 64px);"
      leaflet
      [leafletOptions]="mapOptions"
-     (leafletMapReady)="onMapReady($event)"
-     (leafletContextMenu)="Test($event)">
+     (leafletMapReady)="onMapReady($event)">
 </div>

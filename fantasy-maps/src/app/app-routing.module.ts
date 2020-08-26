@@ -4,8 +4,8 @@ import { MapComponent } from './map/map.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/fantasy-maps/forgotten-realms', pathMatch: 'full' },
-  { path: 'fantasy-maps/:index', component: MapComponent },
+  { path: '', redirectTo: 'forgotten-realms', pathMatch: 'full' },
+  { path: ':index', component: MapComponent },
 ];
 
 @NgModule({
