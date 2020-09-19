@@ -7,6 +7,10 @@ import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,7 +20,10 @@ import { NavbarComponent } from './navbar/navbar.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    LeafletModule
+    LeafletModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule,
   ],
   providers: [
     Title,
