@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { faBars, faMap } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
@@ -10,6 +12,8 @@ import { environment } from '../../environments/environment';
 export class NavbarComponent implements OnInit {
 
   debug = !environment.production;
+  menuIcon = faBars;
+  mapsIcon = faMap;
 
   constructor(
     public router: Router,

@@ -2,13 +2,15 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Handlee&family=Merienda:wght@700&display=swap');
 
-/* Classes */
+/* Elements */
 
-.brand-logo {
-    font-family: "Handlee";
-    font-weight: 900;
+h1 {
+  font-family: "Roboto";
+  font-weight: 900;
 }
 
-.navbar-spacer {
-  flex: 1 1 auto;
+/* Classes */
+
+.content {
+    padding: 5%;
 }

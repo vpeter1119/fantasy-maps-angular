@@ -1,4 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Imports */
+
+@import url('https://fonts.googleapis.com/css2?family=Handlee&display=swap');
+
+/* Styles */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #D5B783;
+}
+
+h1 {
+  font-family: "Handlee";
+}
