@@ -21,5 +21,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
+  },
+  "angularCompilerOptions": {
+    "enableIvy": false
   }
 }
