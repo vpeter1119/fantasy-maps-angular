@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import * as L from 'leaflet';
@@ -9,7 +9,9 @@ import { environment } from '../../environments/environment';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnChanges {
+
+  @Input('mapId') mapId: string;
 
   /* General Config Vars */
 
@@ -57,15 +59,21 @@ export class MapComponent implements OnInit {
   onMapReady(map: L.Map) {
     this.map = map;
     this.SetMapBounds(map);
-    this.LoadMapContent(this.mapName);
+    this.LoadMapContent(this.mapId);
     this.isLoading = false;
+  }
+
+  ngOnChanges(changes) {
+    if (!changes.mapId.firstChange) {
+      this.LoadMapContent(changes.mapId.currentValue);
+    }
   }
 
   LoadMapContent(mapToLoad: string) {
     if (this.map != null) {
-      this.map.layers = [];
+      this.map._layers = {};
     }
-    this.titleService.setTitle(`${this.mapName} | Fantasy Maps by Peter Vertesi`);
+    this.titleService.setTitle(`${mapToLoad} | Fantasy Maps by Peter Vertesi`);
     var newTileLayerString = `assets/${mapToLoad}/tiles/{z}-{x}-{y}.jpg`;
     var tileLayerOptions = {
       bounds: this.layerbounds,

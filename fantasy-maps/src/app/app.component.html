@@ -1,14 +1,11 @@
-<button fxHide fxShow.lt-md type="button" mat-raised-button (click)="sidenav.toggle()" style="top: 50px; z-index: 9999;">
-  Toggle
-</button>
-<app-navbar></app-navbar>
+<app-navbar (mapClicked)="changeMap($event)"></app-navbar>
 <!-- Desktop view -->
-<div class="content" fxLayout="row" fxShow fxHide.lt-md>
+<div class="content" style="height: 100vh;" fxLayout="row" fxShow fxHide.lt-md>
   <div class="map-details" fxFlex.gt-sm="30%">
     <app-details></app-details>
   </div>
   <div class="map-view" fxFlex.gt-sm="70%" fxFlex.lt-md="100%">
-    <router-outlet></router-outlet>
+    <app-map [mapId]="mapId"></app-map>
   </div>
 </div>
 <!-- Mobile view -->
@@ -18,7 +15,8 @@
       <app-details></app-details>
     </mat-sidenav>
 
-    <div>
+    <div class="sidenav-content">
+      <app-map [mapId]="mapId" (click)="sidenav.toggle()"></app-map>
     </div>
 
   </mat-sidenav-container>

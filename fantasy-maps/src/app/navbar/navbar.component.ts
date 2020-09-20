@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { faBars, faMap } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
@@ -10,6 +10,8 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+
+  @Output() mapClicked = new EventEmitter<string>();
 
   debug = !environment.production;
   menuIcon = faBars;
@@ -25,6 +27,10 @@ export class NavbarComponent implements OnInit {
 
   GoTo(path: string) {
     this.router.navigate([path]);
+  }
+
+  onClick(path: string) {
+    this.mapClicked.emit(path);
   }
 
 }

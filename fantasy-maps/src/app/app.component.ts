@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'fantasy-maps';
+  mapId = 'forgotten-realms';
+
+  changeMap(id: string) {
+    this.mapId = id;
+  }
 }
