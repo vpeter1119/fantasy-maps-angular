@@ -1,21 +1,21 @@
 <app-navbar (mapClicked)="changeMap($event)"></app-navbar>
 <!-- Desktop view -->
-<div class="content" style="height: 100vh;" fxLayout="row" fxShow fxHide.lt-md>
-  <div class="map-details" fxFlex.gt-sm="30%">
+<div class="content" style="height: calc(100% - 64px);" fxLayout="row" fxShow fxHide.lt-md>
+  <div class="map-details" fxFlex="30%">
     <app-details></app-details>
   </div>
-  <div class="map-view" fxFlex.gt-sm="70%" fxFlex.lt-md="100%">
+  <div class="map-view" fxFlex="70%">
     <app-map [mapId]="mapId"></app-map>
   </div>
 </div>
 <!-- Mobile view -->
 <div fxHide fxShow.lt-md>
-  <mat-sidenav-container class="sidenav-container" autosize>
+  <mat-sidenav-container class="sidenav-container" style="height: calc(100vh - 56px)" autosize>
     <mat-sidenav #sidenav class="sidenav" mode="over">
       <app-details></app-details>
     </mat-sidenav>
 
-    <div class="sidenav-content">
+    <div class="sidenav-content" style="height: calc(100vh - 56px)">
       <app-map [mapId]="mapId" (click)="sidenav.toggle()"></app-map>
     </div>
 
