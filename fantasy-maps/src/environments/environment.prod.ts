@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  apiRoot: 'http://mcrpc-server.petervertesi.com/api'
 };

@@ -1,17 +1,23 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
+import { MapService } from './map.service';
+import { GeoJSON } from './geojson.model';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, OnChanges {
+export class MapComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input('mapId') mapId: string;
+
+  data: GeoJSON[];
+  geoJsonSub: Subscription;
 
   /* General Config Vars */
 
@@ -31,6 +37,8 @@ export class MapComponent implements OnInit, OnChanges {
   map: any;
   layerbounds: L.LatLngBounds;
   tileLayerString = '';
+  geoJsonLayer: L.GeoJSON;
+  defaultMarkerIcon: L.Icon;
   mapOptions = {
     crs: '',
     layers: [],
@@ -42,6 +50,7 @@ export class MapComponent implements OnInit, OnChanges {
     private router: Router,
     private route: ActivatedRoute,
     private titleService: Title,
+    public mapService: MapService,
   ) {
     // Router config
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -51,25 +60,39 @@ export class MapComponent implements OnInit, OnChanges {
     this.tileLayerString = `assets/${this.mapName}/tiles/{z}-{x}-{y}.jpg`;
     // Add custom CRS
     this.ConfigureCRS();
+    const iconUrl = encodeURI(`data:image/svg+xml,${btoa('assets/icons/custommarker.svg')}`);
+    this.defaultMarkerIcon = new L.Icon({
+      iconUrl: 'assets/icons/position-marker.png',
+      //iconUrl: iconUrl,
+      iconSize: [58, 58],
+      iconAnchor: [29, 58],
+      popupAnchor: [0, -43],
+      shadowUrl: '',
+      shadowSize: [0, 0],
+      shadowAnchor: [0,0]
+    });
   }
 
   ngOnInit(): void {
   }
 
   onMapReady(map: L.Map) {
+    if (this.debug) console.warn('onMapReady called');
     this.map = map;
     this.SetMapBounds(map);
     this.LoadMapContent(this.mapId);
     this.isLoading = false;
   }
 
-  ngOnChanges(changes) {
+  ngOnChanges(changes) { 
     if (!changes.mapId.firstChange) {
+      if (this.debug) console.warn('ngOnChanges called');
       this.LoadMapContent(changes.mapId.currentValue);
     }
   }
 
   LoadMapContent(mapToLoad: string) {
+    if (this.debug) console.warn('LoadMapContent called');
     if (this.map != null) {
       this.map._layers = {};
     }
@@ -87,6 +110,9 @@ export class MapComponent implements OnInit, OnChanges {
     };
     let newTileLayer = L.tileLayer(newTileLayerString, tileLayerOptions);
     newTileLayer.addTo(this.map);
+    this.geoJsonSub = this.mapService.getGeoJson(mapToLoad).subscribe(data => {
+      this.LoadGeoJsonData(data);
+    });
   };
 
   ConfigureCRS() {
@@ -124,6 +150,29 @@ export class MapComponent implements OnInit, OnChanges {
     map.setMaxBounds(this.layerbounds);
   }
 
+  LoadGeoJsonData(data: GeoJSON[]) {
+    this.geoJsonLayer = new L.GeoJSON(data, {
+      pointToLayer: this.CreateCustomMarker.bind(this),
+      onEachFeature: this.CreateGeoJsonPopup,
+      coordsToLatLng: this.CoordinatesToLatLng
+    });
+    this.geoJsonLayer.addTo(this.map);
+    //this.geoJsonLayer.addData(data);
+  }
+
+  CreateCustomMarker(feature: GeoJSON, latlng: L.LatLng) {
+    var icon = this.defaultMarkerIcon;
+    let marker = new L.Marker(latlng, {
+      icon: icon
+    });
+    return marker;
+  }
+
+  CreateGeoJsonPopup(feature: GeoJSON, layer: L.GeoJSON) {
+    var popupContent = `<h3><a href="${feature.properties.url}" target="_blank" rel="noopener noreferrer">${feature.properties.name}</a></h3>${feature.properties.desc}`;
+    layer.bindPopup(popupContent);
+  }
+
   LatLngToCoordinates(original: L.LatLng) {
     //Convert latLng to map-specific coordinates
     let coordinates = [original.lng, -original.lat];
@@ -134,6 +183,10 @@ export class MapComponent implements OnInit, OnChanges {
     //Convert map-specific coordinates to standard Leaflet LatLng
     let latlng = new L.LatLng(-original[1], original[0]);
     return latlng;
+  }
+
+  ngOnDestroy(): void {
+    this.geoJsonSub.unsubscribe();
   }
 
 }

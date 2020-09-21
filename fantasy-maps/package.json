@@ -28,6 +28,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "angular2-materialize": "^15.1.10",
     "leaflet": "^1.6.0",
+    "leaflet-svgicon": "0.0.2",
     "materialize-css": "^1.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
