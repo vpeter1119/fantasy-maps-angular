@@ -37,6 +37,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   map: any;
   layerbounds: L.LatLngBounds;
   tileLayerString = '';
+  geoJsonLayerGroup: L.LayerGroup = new L.LayerGroup();
   geoJsonLayer: L.GeoJSON;
   defaultMarkerIcon: L.Icon;
   mapOptions = {
@@ -45,6 +46,10 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     zoom: this.initZoom,
     center: this.initCenter,
   };
+  mapLayersControl = {
+    baseLayers: {},
+    overlays: {}
+  }
 
   constructor(
     private router: Router,
@@ -77,25 +82,30 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onMapReady(map: L.Map) {
-    if (this.debug) console.warn('onMapReady called');
+    //if (this.debug) console.warn('onMapReady called');
     this.map = map;
     this.SetMapBounds(map);
+    this.geoJsonLayerGroup.addTo(this.map);
     this.LoadMapContent(this.mapId);
     this.isLoading = false;
   }
 
   ngOnChanges(changes) { 
     if (!changes.mapId.firstChange) {
-      if (this.debug) console.warn('ngOnChanges called');
+      if (this.debug) console.warn(this.map);
+      this.geoJsonLayerGroup.clearLayers();
       this.LoadMapContent(changes.mapId.currentValue);
     }
   }
 
   LoadMapContent(mapToLoad: string) {
-    if (this.debug) console.warn('LoadMapContent called');
+    //if (this.debug) console.warn('LoadMapContent called');
     if (this.map != null) {
+      if (this.debug) console.warn('layers cleared');
       this.map._layers = {};
+      if (this.debug) console.warn(this.map._layers);
     }
+    
     this.titleService.setTitle(`${mapToLoad} | Fantasy Maps by Peter Vertesi`);
     var newTileLayerString = `assets/${mapToLoad}/tiles/{z}-{x}-{y}.jpg`;
     var tileLayerOptions = {
@@ -103,13 +113,15 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       tileSize: L.point(256, 256),
       tolerance: 0.8,
       noWrap: true,
-      minZoom: this.mapMinZoom,
-      maxZoom: this.mapMaxZoom,
+      minZoom: (mapToLoad == 'faerun') ? 2 : this.mapMinZoom,
+      maxZoom: (mapToLoad == 'faerun') ? 5 : this.mapMaxZoom,
       tms: true,
       attribution: '&copy; Peter Vertesi, 2020'
     };
     let newTileLayer = L.tileLayer(newTileLayerString, tileLayerOptions);
-    newTileLayer.addTo(this.map);
+    //this.map.addLayer(newTileLayer);
+    this.mapLayersControl.baseLayers = { base: newTileLayer };
+    //newTileLayer.addTo(this.map);
     this.geoJsonSub = this.mapService.getGeoJson(mapToLoad).subscribe((data: GeoJSON.FeatureCollection) => {
       this.LoadGeoJsonData(data);
     });
@@ -156,7 +168,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       onEachFeature: this.CreateGeoJsonPopup,
       coordsToLatLng: this.CoordinatesToLatLng
     });
-    this.geoJsonLayer.addTo(this.map);
+    this.geoJsonLayerGroup.addLayer(this.geoJsonLayer);
+    //this.geoJsonLayer.addTo(this.map);
     //this.geoJsonLayer.addData(data);
   }
 
