@@ -5,7 +5,8 @@
     <app-details></app-details>
   </div>
   <div class="map-view" fxFlex="70%">
-    <app-map [mapId]="mapId"></app-map>
+    <mat-spinner *ngIf="isLoading" style="margin: auto; top: 40%"></mat-spinner>
+    <app-map [mapId]="mapId" *ngIf="!isLoading"></app-map>
   </div>
 </div>
 <!-- Mobile view

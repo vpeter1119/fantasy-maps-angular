@@ -55,8 +55,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       factory: 0.03125,
       minZoom: 2,
       maxZoom: 5,
-      initZoom: 3,
-      initCenter: [-1942, 1294, 3]
+      initZoom: 5,
+      initCenter: [-1500,3500, 5]
     }
   };
 
@@ -162,8 +162,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       tileSize: L.point(256, 256),
       tolerance: 0.8,
       noWrap: true,
-      minZoom: (mapToLoad == 'faerun') ? 2 : this.mapMinZoom,
-      maxZoom: (mapToLoad == 'faerun') ? 5 : this.mapMaxZoom,
+      minZoom: this.mapMinZoom,
+      maxZoom: this.mapMaxZoom,
       tms: true,
       attribution: '&copy; Peter Vertesi, 2020'
     };
