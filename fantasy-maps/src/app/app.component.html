@@ -1,10 +1,11 @@
 <app-navbar (mapClicked)="changeMap($event)"></app-navbar>
 <!-- Desktop view -->
-<div class="content" style="height: calc(100% - 64px);" fxLayout="row" fxShow fxHide.lt-md>
-  <div class="map-details" fxFlex="30%">
+<div class="content" style="height: calc(100% - 64px);" fxLayout="row">
+  <div class="map-details" fxFlex="30%" fxFlex.lt-md="100%">
     <app-details [markerData]="markerData"></app-details>
   </div>
-  <div class="map-view" fxFlex="70%">
+  <br fxHide fxShow.lt-md/>
+  <div class="map-view" fxFlex="70%" fxFlex.lt-md="100%">
     <mat-spinner *ngIf="isLoading" style="margin: auto; top: 40%"></mat-spinner>
     <app-map [mapId]="mapId" (markerClicked)="displayDetails($event)" *ngIf="!isLoading"></app-map>
   </div>
