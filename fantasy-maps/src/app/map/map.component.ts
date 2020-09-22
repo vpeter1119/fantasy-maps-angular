@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -26,7 +26,8 @@ export interface MapData {
 })
 export class MapComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input('mapId') mapId: string;
+  @Input() mapId: string;
+  @Output() markerClicked = new EventEmitter<object>();
 
   data: GeoJSON.FeatureCollection;
   geoJsonSub: Subscription;
@@ -84,6 +85,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   geoJsonLayerGroup: L.LayerGroup = new L.LayerGroup();
   geoJsonLayer: L.GeoJSON;
   defaultMarkerIcon: L.Icon;
+  addMarker: L.Marker;
+  contextPopup: L.Popup;
   mapOptions = {
     crs: '',
     layers: [],
@@ -125,7 +128,9 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     this.tileLayerGroup.addTo(this.mapObject);
     this.geoJsonLayerGroup.addTo(this.mapObject);
     this.LoadMapContent(this.mapId);
-    this.isLoading = false;
+    this.mapObject.on('contextmenu', <LeafletMouseEvent>(e) => {
+      this.OpenContextPopup(e);
+    });
   }
 
   ngOnChanges(changes) { 
@@ -210,7 +215,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   LoadGeoJsonData(data: GeoJSON.FeatureCollection) {
     this.geoJsonLayer = new L.GeoJSON(data, {
       pointToLayer: this.CreateCustomMarker.bind(this),
-      onEachFeature: this.CreateGeoJsonPopup,
+      onEachFeature: this.BindDetailsEvent.bind(this),
       coordsToLatLng: this.CoordinatesToLatLng
     });
     this.geoJsonLayerGroup.addLayer(this.geoJsonLayer);
@@ -224,6 +229,34 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       icon: icon
     });
     return marker;
+  }
+
+  CreateAddMarker(e) {
+    if (this.addMarker) this.addMarker.remove();
+    e.originalEvent.preventDefault();
+    var coords = this.LatLngToCoordinates(e.latlng);
+    this.addMarker = L.marker(e.latlng, {
+      icon: this.defaultMarkerIcon,
+      draggable: true
+    }).bindPopup(`Hello there! This coordinate is ${Math.floor(coords[0])}:${Math.floor(coords[1])}`);
+    this.addMarker.addTo(this.mapObject);
+    this.addMarker.openPopup();
+  }
+
+  OpenContextPopup(e) {
+    if (this.contextPopup) this.contextPopup.closePopup();
+    e.originalEvent.preventDefault();
+    this.contextPopup = L.popup();
+    this.contextPopup.setLatLng(e.latlng);
+    this.contextPopup.setContent(`<p><button mat-button>[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
+    this.contextPopup.openOn(this.mapObject);
+  }
+
+  BindDetailsEvent(feature: GeoJSON.Feature, layer: L.GeoJSON) {
+    layer.on('click', (e) => {
+      var data = e.target.feature.properties;
+      this.markerClicked.emit(data);
+    }); 
   }
 
   CreateGeoJsonPopup(feature: GeoJSON.Feature, layer: L.GeoJSON) {

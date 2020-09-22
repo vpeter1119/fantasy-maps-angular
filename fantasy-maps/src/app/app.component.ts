@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
   title = 'fantasy-maps';
   mapId = 'highrock';
   mapId2 = 'faerun';
+  markerData: string;
 
   ngOnInit(): void {
     this.isLoading = false;
@@ -23,4 +24,9 @@ export class AppComponent implements OnInit {
       this.isLoading = false;
     }, 300);
   }
+
+  displayDetails(data) {
+    this.markerData = data;
+  }
+
 }
