@@ -5,7 +5,19 @@ import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MapService } from './map.service';
-//import { GeoJSON } from './geojson.model';
+
+export interface MapData {
+  id: string,
+  name: string,
+  height: number,
+  width: number,
+  factorx: number,
+  factory: number,
+  minZoom: number,
+  maxZoom: number,
+  initZoom: number,
+  initCenter: number[]
+}
 
 @Component({
   selector: 'app-map',
@@ -19,23 +31,55 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   data: GeoJSON.FeatureCollection;
   geoJsonSub: Subscription;
 
+  /* Placeholder Map Data */
+
+  maps = {
+    highrock: {
+      id: 'highrock',
+      name: 'High Rock',
+      height: 4096,
+      width: 4096,
+      factorx: 0.0625,
+      factory: 0.0625,
+      minZoom: 1,
+      maxZoom: 4,
+      initZoom: 3,
+      initCenter: [-1942, 1294, 3]
+    },
+    faerun: {
+      id: 'faerun',
+      name: 'Forgotten Realms',
+      height: 8192,
+      width: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 3,
+      initCenter: [-1942, 1294, 3]
+    }
+  };
+
   /* General Config Vars */
 
   debug = !environment.production;
   param;
   isLoading: boolean;
-  factorx = 0.0625;
-  factory = 0.0625;
-  mapheight = 4096;
-  mapwidth = 4096;
-  mapMinZoom = 1;
-  mapMaxZoom = 4;
-  initZoom = 3;
-  initCenter = L.latLng(-1942, 1294, 3);
-  mapName = '';
+  chosenMap: MapData;
+  factorx: number;
+  factory: number;
+  mapheight: number;
+  mapwidth: number;
+  mapMinZoom: number;
+  mapMaxZoom: number;
+  initZoom: number;
+  initCenter: L.LatLng;
   customCRS: any;
-  map: any;
+  map: L.Map;
+  mapObject: L.Map;
   layerbounds: L.LatLngBounds;
+  tileLayerGroup: L.LayerGroup = new L.LayerGroup();
+  tileLayer: L.TileLayer;
   tileLayerString = '';
   geoJsonLayerGroup: L.LayerGroup = new L.LayerGroup();
   geoJsonLayer: L.GeoJSON;
@@ -43,13 +87,9 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   mapOptions = {
     crs: '',
     layers: [],
-    zoom: this.initZoom,
-    center: this.initCenter,
+    zoom: 2,
+    center: L.latLng(0,0,2),
   };
-  mapLayersControl = {
-    baseLayers: {},
-    overlays: {}
-  }
 
   constructor(
     private router: Router,
@@ -59,16 +99,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   ) {
     // Router config
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    // Get map name
-    this.mapName = this.route.snapshot.paramMap.get('index');
-    // Set tile layer string
-    this.tileLayerString = `assets/${this.mapName}/tiles/{z}-{x}-{y}.jpg`;
-    // Add custom CRS
-    this.ConfigureCRS();
-    const iconUrl = encodeURI(`data:image/svg+xml,${btoa('assets/icons/custommarker.svg')}`);
     this.defaultMarkerIcon = new L.Icon({
       iconUrl: 'assets/icons/position-marker.png',
-      //iconUrl: iconUrl,
       iconSize: [58, 58],
       iconAnchor: [29, 58],
       popupAnchor: [0, -43],
@@ -79,34 +111,51 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-  }
-
-  onMapReady(map: L.Map) {
-    //if (this.debug) console.warn('onMapReady called');
-    this.map = map;
-    this.SetMapBounds(map);
-    this.geoJsonLayerGroup.addTo(this.map);
+    // Configure initial map data
+    this.chosenMap = this.maps[this.mapId];
+    this.ApplyMapConfig(this.chosenMap);
+    // Initialize map
+    this.mapObject = L.map('map', {
+      crs: this.ConfigureCRS(),
+      center: this.initCenter,
+      zoom: this.initZoom
+    });
+    //this.map = this.mapObject;
+    this.mapObject.setMaxBounds(this.SetMapBounds(this.mapObject));
+    this.tileLayerGroup.addTo(this.mapObject);
+    this.geoJsonLayerGroup.addTo(this.mapObject);
     this.LoadMapContent(this.mapId);
     this.isLoading = false;
   }
 
   ngOnChanges(changes) { 
     if (!changes.mapId.firstChange) {
-      if (this.debug) console.warn(this.map);
       this.geoJsonLayerGroup.clearLayers();
       this.LoadMapContent(changes.mapId.currentValue);
     }
   }
 
+  ApplyMapConfig(mapData: MapData) {
+    this.chosenMap = mapData;
+    this.factorx = this.chosenMap.factorx;
+    this.factory = this.chosenMap.factory;
+    this.mapheight = this.chosenMap.height;
+    this.mapwidth = this.chosenMap.width;
+    this.mapMinZoom = this.chosenMap.minZoom;
+    this.mapMaxZoom = this.chosenMap.maxZoom;
+    this.initZoom = this.chosenMap.initZoom;
+    this.initCenter = L.latLng(this.chosenMap.initCenter[0], this.chosenMap.initCenter[1], this.chosenMap.initCenter[2]);
+    // Adjust zoom and center
+    //this.map.panTo(this.initCenter);
+  }
+
   LoadMapContent(mapToLoad: string) {
-    //if (this.debug) console.warn('LoadMapContent called');
+    this.ApplyMapConfig(this.maps[mapToLoad]);
     if (this.map != null) {
-      if (this.debug) console.warn('layers cleared');
-      this.map._layers = {};
-      if (this.debug) console.warn(this.map._layers);
+      //this.map._layers = {};
     }
     
-    this.titleService.setTitle(`${mapToLoad} | Fantasy Maps by Peter Vertesi`);
+    this.titleService.setTitle(`${this.chosenMap.name} | Fantasy Maps by Peter Vertesi`);
     var newTileLayerString = `assets/${mapToLoad}/tiles/{z}-{x}-{y}.jpg`;
     var tileLayerOptions = {
       bounds: this.layerbounds,
@@ -119,18 +168,17 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       attribution: '&copy; Peter Vertesi, 2020'
     };
     let newTileLayer = L.tileLayer(newTileLayerString, tileLayerOptions);
-    //this.map.addLayer(newTileLayer);
-    this.mapLayersControl.baseLayers = { base: newTileLayer };
-    //newTileLayer.addTo(this.map);
+    this.tileLayer = newTileLayer;
+    this.tileLayerGroup.addLayer(this.tileLayer);
     this.geoJsonSub = this.mapService.getGeoJson(mapToLoad).subscribe((data: GeoJSON.FeatureCollection) => {
       this.LoadGeoJsonData(data);
     });
   };
 
   ConfigureCRS() {
-    /* Configure custom CRS */
+    // Configure custom CRS
 
-    this.customCRS = L.Util.extend({}, L.CRS.Simple, {
+    return L.Util.extend({}, L.CRS.Simple, {
       projection: L.Projection.LonLat,
       transformation: new L.Transformation(this.factorx, 0, -this.factory, 0),
 
@@ -150,16 +198,13 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       },
       infinite: true
     });
-
-    this.mapOptions.crs = this.customCRS;
   }
 
   SetMapBounds(map) {
-    /* Set boundaries */
+    // Set boundaries
     var sw = map.unproject([0, this.mapheight], 4);
     var ne = map.unproject([this.mapwidth, 0], 4);
-    this.layerbounds = new L.LatLngBounds(sw, ne);
-    map.setMaxBounds(this.layerbounds);
+    return new L.LatLngBounds(sw, ne);
   }
 
   LoadGeoJsonData(data: GeoJSON.FeatureCollection) {
