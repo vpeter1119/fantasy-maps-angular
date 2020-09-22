@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MapService } from './map.service';
-import { GeoJSON } from './geojson.model';
+//import { GeoJSON } from './geojson.model';
 
 @Component({
   selector: 'app-map',
@@ -16,7 +16,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input('mapId') mapId: string;
 
-  data: GeoJSON[];
+  data: GeoJSON.FeatureCollection;
   geoJsonSub: Subscription;
 
   /* General Config Vars */
@@ -110,7 +110,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     };
     let newTileLayer = L.tileLayer(newTileLayerString, tileLayerOptions);
     newTileLayer.addTo(this.map);
-    this.geoJsonSub = this.mapService.getGeoJson(mapToLoad).subscribe(data => {
+    this.geoJsonSub = this.mapService.getGeoJson(mapToLoad).subscribe((data: GeoJSON.FeatureCollection) => {
       this.LoadGeoJsonData(data);
     });
   };
@@ -150,7 +150,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     map.setMaxBounds(this.layerbounds);
   }
 
-  LoadGeoJsonData(data: GeoJSON[]) {
+  LoadGeoJsonData(data: GeoJSON.FeatureCollection) {
     this.geoJsonLayer = new L.GeoJSON(data, {
       pointToLayer: this.CreateCustomMarker.bind(this),
       onEachFeature: this.CreateGeoJsonPopup,
@@ -160,7 +160,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     //this.geoJsonLayer.addData(data);
   }
 
-  CreateCustomMarker(feature: GeoJSON, latlng: L.LatLng) {
+  CreateCustomMarker(feature: GeoJSON.Feature, latlng: L.LatLng) {
     var icon = this.defaultMarkerIcon;
     let marker = new L.Marker(latlng, {
       icon: icon
@@ -168,7 +168,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     return marker;
   }
 
-  CreateGeoJsonPopup(feature: GeoJSON, layer: L.GeoJSON) {
+  CreateGeoJsonPopup(feature: GeoJSON.Feature, layer: L.GeoJSON) {
     var popupContent = `<h3><a href="${feature.properties.url}" target="_blank" rel="noopener noreferrer">${feature.properties.name}</a></h3>${feature.properties.desc}`;
     layer.bindPopup(popupContent);
   }

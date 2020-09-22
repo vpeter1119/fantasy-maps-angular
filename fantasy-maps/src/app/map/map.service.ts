@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { GeoJSON } from './geojson.model';
+//import { GeoJSON } from './geojson.model';
 
 export interface GeoJsonApiResponse {
   ok: boolean,
   count: number,
-  results: GeoJSON[]
+  results: GeoJSON.FeatureCollection
 }
 
 @Injectable({
@@ -18,7 +18,7 @@ export class MapService {
 
   apiRoot = environment.apiRoot;
   apiUrl = this.apiRoot + '/geojson';
-  geoJsonData: GeoJSON[];
+  geoJsonData: GeoJSON.FeatureCollection;
   geoJsonDataListener = new Subject();
 
   constructor(
@@ -30,7 +30,7 @@ export class MapService {
     this.http.get(url).subscribe((response: GeoJsonApiResponse) => {
       if (response.ok && response.count > 0) {
         this.geoJsonData = response.results;
-        this.geoJsonDataListener.next([...this.geoJsonData]);
+        this.geoJsonDataListener.next(this.geoJsonData);
       }
     });
   }
