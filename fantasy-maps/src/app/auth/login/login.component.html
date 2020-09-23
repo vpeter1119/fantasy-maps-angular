@@ -1,0 +1,25 @@
+<h3>Log in with your MCRPC Account</h3>
+<form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input matInput
+           type="text"
+           id="username"
+           required
+           ngModel
+           name="username">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput
+           type="password"
+           id="password"
+           required
+           ngModel
+           name="password">
+  </mat-form-field>
+  <button type="submit" mat-raised-button color="primary" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Submit</span>
+    <span *ngIf="isLoading"><mat-spinner [diameter]="32"></mat-spinner></span>
+  </button>
+</form>
