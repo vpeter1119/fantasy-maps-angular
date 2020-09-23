@@ -1,0 +1,17 @@
+<div class="content">
+  <!-- Placeholder -->
+  <div *ngIf="!markerData">
+    <h1>Details</h1>
+    <p>Click on a map marker to display details.</p>
+  </div>
+  <!-- Content -->
+  <div *ngIf="markerData">
+    <div class="details-name">
+      <h1>{{markerData.name}}</h1>
+    </div>
+    <div class="details-desc" innerHtml="{{markerData.desc}}"></div>
+    <div class="details-url">
+      <p *ngIf="markerData.url">Further information: <a href="{{markerData.url}}" target="_blank" noopener noreferrer>[LINK]</a></p>
+    </div>
+  </div>
+</div>

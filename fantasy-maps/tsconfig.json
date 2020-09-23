@@ -24,5 +24,6 @@
   },
   "angularCompilerOptions": {
     "enableIvy": false
-  }
+  },
+  "baseUrl": "src"
 }

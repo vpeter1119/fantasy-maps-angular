@@ -1,8 +1,25 @@
-<app-navbar></app-navbar>
-<div style="width: 30%; display: inline-block">
-  <h3>Some Example Title</h3>
-  <p>Some example text.</p>
+<app-navbar (mapClicked)="changeMap($event)"></app-navbar>
+<!-- Desktop view -->
+<div class="content" style="height: calc(100% - 64px);" fxLayout="row">
+  <div class="map-details" fxFlex="30%" fxFlex.lt-md="100%">
+    <app-details [markerData]="markerData"></app-details>
+  </div>
+  <br fxHide fxShow.lt-md/>
+  <div class="map-view" fxFlex="70%" fxFlex.lt-md="100%">
+    <mat-spinner *ngIf="isLoading" style="margin: auto; top: 40%"></mat-spinner>
+    <app-map [mapId]="mapId" (markerClicked)="displayDetails($event)" *ngIf="!isLoading"></app-map>
+  </div>
 </div>
-<div style="width: 70%; display: inline-block">
-  <router-outlet></router-outlet>
-</div>
+<!-- Mobile view
+<div fxHide fxShow.lt-md>
+  <mat-sidenav-container class="sidenav-container" style="height: calc(100vh - 56px)" autosize>
+    <mat-sidenav #sidenav class="sidenav" mode="over">
+      <app-details></app-details>
+    </mat-sidenav>
+
+    <div class="sidenav-content" style="height: calc(100vh - 56px)">
+      <app-map [mapId]="mapId" (click)="sidenav.toggle()"></app-map>
+    </div>
+
+  </mat-sidenav-container>
+</div> -->
