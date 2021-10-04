@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { environment } from "../../environments/environment";
-
+import jwt_decode from 'jwt-decode';
 import { AuthData } from "./auth-data.model";
 
 @Injectable({ providedIn: "root" })
@@ -79,9 +79,15 @@ export class AuthService {
             const expiresInDuration = response.expiresIn;
             this.setAuthTimer(expiresInDuration);
             this.isAuthenticated = true;
-            this.isAdmin = response.isAdmin;
-            this.currentUser = response.userData;
-            this.userId = response.userId;
+            let tokenDecoded: {email: string, exp: number, iat: number, isAdmin: boolean, userId: string, username: string} = jwt_decode(token);
+            this.isAdmin = tokenDecoded.isAdmin;
+            this.currentUser = {
+              username: tokenDecoded.username,
+              userId: tokenDecoded.userId,
+              isAdmin: tokenDecoded.isAdmin
+            };
+            console.log('#authService -> login() -> currentUser: ', this.currentUser);
+            this.userId = tokenDecoded.userId;
             this.authStatusListener.next(true);
             this.adminStatusListener.next(this.isAdmin);
             this.currentUserListener.next(this.currentUser);
@@ -107,13 +113,19 @@ export class AuthService {
     if (expiresIn > 0) {
       this.token = authInformation.token;
       this.isAuthenticated = true;
-      //this.isAdmin = response.isAdmin;
-      //this.currentUser = response.userData;
-      this.userId = authInformation.userId;
+      let tokenDecoded: {email: string, exp: number, iat: number, isAdmin: boolean, userId: string, username: string} = jwt_decode(authInformation.token);
+      this.isAdmin = tokenDecoded.isAdmin;
+      this.currentUser = {
+        username: tokenDecoded.username,
+        userId: tokenDecoded.userId,
+        isAdmin: tokenDecoded.isAdmin
+      };
+      console.log('#authService -> autoAuthUser() -> currentUser: ', this.currentUser);
+      this.userId = tokenDecoded.userId;
       this.setAuthTimer(expiresIn / 10000);
       this.authStatusListener.next(true);
-      //this.adminStatusListener.next(this.isAdmin);
-      //this.currentUserListener.next(this.currentUser);
+      this.adminStatusListener.next(this.isAdmin);
+      this.currentUserListener.next(this.currentUser);
       return true;
     }
   }

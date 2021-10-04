@@ -38,11 +38,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       console.log('#navbarComponent -> ngOnInit() \n Auth data from service used.');
       this.isAuth = true;
       this.currentUserSub = this.authService.getCurrentUser().subscribe(userData => this.currentUser = userData);
+      this.currentUser = this.authService.getCurrentUserRaw();
       console.log('#navbarComponent -> ngOnInit() -> currentUser: ', this.currentUser);
     } else if (this.authService.autoAuthUser()) {
       console.log('#navbarComponent -> ngOnInit() \n Automatic login success.');
       this.isAuth = true;
       this.currentUserSub = this.authService.getCurrentUser().subscribe(userData => this.currentUser = userData);
+      this.currentUser = this.authService.getCurrentUserRaw();
       console.log('#navbarComponent -> ngOnInit() -> currentUser: ', this.currentUser);
     } else {
       console.log('#navbarComponent -> ngOnInit() \n No auth data.');
@@ -64,9 +66,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
       width: '300px'
     });
     dialogRef.afterClosed().subscribe(() => {
-      //this.isAuth = this.authService.getIsAuth();
-      //this.currentUser = this.authService.getCurrentUserRaw();
-      //console.log('#navbarComponent -> onOpenLogin() -> currentUser: ', this.currentUser);
+      this.isAuth = this.authService.getIsAuth();
+      this.currentUser = this.authService.getCurrentUserRaw();
+      console.log('#navbarComponent -> onOpenLogin() -> currentUser: ', this.currentUser);
     });
   }
 
