@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MapService } from './map.service';
+import { AuthService } from '../auth/auth.service';
 
 export interface MapData {
   id: string,
@@ -99,6 +100,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     private route: ActivatedRoute,
     private titleService: Title,
     public mapService: MapService,
+    private authService: AuthService,
   ) {
     // Router config
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -248,7 +250,11 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     e.originalEvent.preventDefault();
     this.contextPopup = L.popup();
     this.contextPopup.setLatLng(e.latlng);
-    this.contextPopup.setContent(`<p><button mat-button>[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
+    if (this.authService.getIsAuth()) {
+      this.contextPopup.setContent(`<p><button mat-button>[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
+    } else {
+      this.contextPopup.setContent(`<p>You are not allowed to use this feature! Please log in first.</p>`);
+    }
     this.contextPopup.openOn(this.mapObject);
   }
 

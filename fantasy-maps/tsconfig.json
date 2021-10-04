@@ -25,5 +25,5 @@
   "angularCompilerOptions": {
     "enableIvy": false
   },
-  "baseUrl": "src"
+  "baseUrl": "./src/"
 }

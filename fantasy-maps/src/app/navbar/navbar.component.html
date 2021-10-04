@@ -1,6 +1,9 @@
 <div class="navbar">
   <mat-toolbar fxShow fxHide.lt-md>
     <span class="brand-logo">Fantasy Maps by Peter Vertesi</span>
+    <button *ngIf="!isAuth" mat-button class="login-button" (click)="onOpenLogin()"><fa-icon [icon]="icons.login"></fa-icon> Login</button>
+    <button *ngIf="isAuth" mat-button class="login-button" (click)="onProfile()"><fa-icon [icon]="icons.user"></fa-icon>  {{currentUser.username}} </button>
+    <button *ngIf="isAuth" mat-button class="login-button" (click)="onLogout()"><fa-icon [icon]="icons.logout"></fa-icon> Logout</button>
     <span class="navbar-spacer"></span>
     <!-- Desktop navigation -->
     <div class="navmenu-desktop">
@@ -13,8 +16,8 @@
     <span class="brand-logo">Fantasy Maps</span>
     <span class="navbar-spacer"></span>
     <!-- Menu button -->
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-      <fa-icon [icon]="mapsIcon"></fa-icon>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu icon button">
+      <fa-icon [icon]="icons.map"></fa-icon>
     </button>
     <!-- Mobile navigation -->
     <div class="navmenu-mobile">
