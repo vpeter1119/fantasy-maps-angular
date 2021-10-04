@@ -97,19 +97,24 @@ export class AuthService {
     })
   }
 
-  autoAuthUser() {
+  autoAuthUser(): boolean {
     const authInformation = this.getAuthData();
     if (!authInformation) {
-      return;
+      return false;
     }
     const now = new Date();
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
     if (expiresIn > 0) {
       this.token = authInformation.token;
       this.isAuthenticated = true;
+      //this.isAdmin = response.isAdmin;
+      //this.currentUser = response.userData;
       this.userId = authInformation.userId;
       this.setAuthTimer(expiresIn / 10000);
       this.authStatusListener.next(true);
+      //this.adminStatusListener.next(this.isAdmin);
+      //this.currentUserListener.next(this.currentUser);
+      return true;
     }
   }
 

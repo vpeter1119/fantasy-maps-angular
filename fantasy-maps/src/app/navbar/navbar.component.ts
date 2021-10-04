@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { faBars, faMap } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
@@ -7,13 +7,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../auth/login/login.component';
 import { AuthService } from '../auth/auth.service';
 import { IconsService } from '../common/icons.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
 
   @Output() mapClicked = new EventEmitter<string>();
 
@@ -21,6 +22,7 @@ export class NavbarComponent implements OnInit {
   icons;
   isAuth: boolean = false;
   currentUser;
+  currentUserSub: Subscription = new Subscription();
 
   constructor(
     public router: Router,
@@ -32,6 +34,25 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.authService.getIsAuth()) {
+      console.log('#navbarComponent -> ngOnInit() \n Auth data from service used.');
+      this.isAuth = true;
+      this.currentUserSub = this.authService.getCurrentUser().subscribe(userData => this.currentUser = userData);
+      console.log('#navbarComponent -> ngOnInit() -> currentUser: ', this.currentUser);
+    } else if (this.authService.autoAuthUser()) {
+      console.log('#navbarComponent -> ngOnInit() \n Automatic login success.');
+      this.isAuth = true;
+      this.currentUserSub = this.authService.getCurrentUser().subscribe(userData => this.currentUser = userData);
+      console.log('#navbarComponent -> ngOnInit() -> currentUser: ', this.currentUser);
+    } else {
+      console.log('#navbarComponent -> ngOnInit() \n No auth data.');
+      this.isAuth = false;
+      this.currentUser = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.currentUserSub.unsubscribe();
   }
 
   GoTo(path: string) {
@@ -43,8 +64,9 @@ export class NavbarComponent implements OnInit {
       width: '300px'
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.isAuth = this.authService.getIsAuth();
-      this.currentUser = this.authService.getCurrentUserRaw();
+      //this.isAuth = this.authService.getIsAuth();
+      //this.currentUser = this.authService.getCurrentUserRaw();
+      //console.log('#navbarComponent -> onOpenLogin() -> currentUser: ', this.currentUser);
     });
   }
 

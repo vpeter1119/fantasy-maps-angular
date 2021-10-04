@@ -2,7 +2,7 @@
   <mat-toolbar fxShow fxHide.lt-md>
     <span class="brand-logo">Fantasy Maps by Peter Vertesi</span>
     <button *ngIf="!isAuth" mat-button class="login-button" (click)="onOpenLogin()"><fa-icon [icon]="icons.login"></fa-icon> Login</button>
-    <button *ngIf="isAuth" mat-button class="login-button" (click)="onProfile()"><fa-icon [icon]="icons.user"></fa-icon>  {{currentUser.username}}</button>
+    <button *ngIf="isAuth" mat-button class="login-button" (click)="onProfile()"><fa-icon [icon]="icons.user"></fa-icon>  User </button>
     <button *ngIf="isAuth" mat-button class="login-button" (click)="onLogout()"><fa-icon [icon]="icons.logout"></fa-icon> Logout</button>
     <span class="navbar-spacer"></span>
     <!-- Desktop navigation -->
