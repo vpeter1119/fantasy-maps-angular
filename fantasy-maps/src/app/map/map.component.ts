@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MapService } from './map.service';
 import { AuthService } from '../auth/auth.service';
+import { IconsService } from 'app/common/icons.service';
 
 export interface MapData {
   id: string,
@@ -85,7 +86,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   tileLayerString = '';
   geoJsonLayerGroup: L.LayerGroup = new L.LayerGroup();
   geoJsonLayer: L.GeoJSON;
-  defaultMarkerIcon: L.Icon;
+  defaultMarkerIcon: L.DivIcon;
   addMarker: L.Marker;
   contextPopup: L.Popup;
   mapOptions = {
@@ -95,23 +96,24 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     center: L.latLng(0,0,2),
   };
 
+  icons;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private titleService: Title,
     public mapService: MapService,
     private authService: AuthService,
+    private iconsService: IconsService,
   ) {
     // Router config
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.defaultMarkerIcon = new L.Icon({
-      iconUrl: 'assets/icons/position-marker.png',
+    this.icons = this.iconsService.getIcons();
+    console.log(this.icons.user);
+    this.defaultMarkerIcon = L.divIcon({
+      html: '<i class="fas fa-user"></i> ICON',
+      className: 'dummy',
       iconSize: [58, 58],
-      iconAnchor: [29, 58],
-      popupAnchor: [0, -43],
-      shadowUrl: '',
-      shadowSize: [0, 0],
-      shadowAnchor: [0,0]
     });
   }
 
