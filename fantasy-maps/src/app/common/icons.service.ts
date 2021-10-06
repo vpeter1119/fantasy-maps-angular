@@ -5,7 +5,8 @@ import {
   faSignInAlt,
   faSignOutAlt,
   faUser,
-  faPen
+  faPen,
+  faEye
 } from '@fortawesome/free-solid-svg-icons';
 
 @Injectable({
@@ -19,7 +20,8 @@ export class IconsService {
     login: faSignInAlt,
     logout: faSignOutAlt,
     user: faUser,
-    edit: faPen
+    edit: faPen,
+    view: faEye
   }
 
   constructor() { }

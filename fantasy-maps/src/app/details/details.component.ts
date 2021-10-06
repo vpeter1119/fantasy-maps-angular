@@ -17,6 +17,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   currentUser;
   currentUserSub: Subscription = new Subscription();
   icons;
+  mode: string;
 
   constructor(
     private authService: AuthService,
@@ -25,6 +26,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.isAuth = false;
     this.currentUser = null;
     this.icons = iconsService.getIcons();
+    this.mode = 'view';
   }
 
   ngOnInit(): void {
@@ -43,6 +45,14 @@ export class DetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.isAuthSub.unsubscribe();
     this.currentUserSub.unsubscribe();
+  }
+
+  onEdit() {
+    this.mode = 'edit';
+  }
+
+  onView() {
+    this.mode = 'view';
   }
 
 }

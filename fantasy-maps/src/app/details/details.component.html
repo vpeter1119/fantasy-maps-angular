@@ -6,15 +6,110 @@
   </div>
   <!-- Content -->
   <div *ngIf="markerData">
-    <div class="details-name">
-      <h1>{{markerData.name}} </h1>
-      <div class="details-menu">
-        <button *ngIf="isAuth" mat-raised-button class="" (click)="onEdit()"><fa-icon [icon]="icons.edit"></fa-icon> Edit</button>
+    <!-- MODE: VIEW -->
+    <div class="detail-view" *ngIf="mode === 'view'">
+      <div class="details-name">
+        <h1>{{markerData.name}} </h1>
+        <div class="details-menu">
+          <button *ngIf="isAuth" mat-raised-button class="" (click)="onEdit()"><fa-icon [icon]="icons.edit"></fa-icon> Edit</button>
+        </div>
+      </div>
+      <div class="details-desc" innerHtml="{{markerData.desc}}"></div>
+      <div class="details-url">
+        <p *ngIf="markerData.url">Further information: <a href="{{markerData.url}}" target="_blank" noopener noreferrer>[LINK]</a></p>
       </div>
     </div>
-    <div class="details-desc" innerHtml="{{markerData.desc}}"></div>
-    <div class="details-url">
-      <p *ngIf="markerData.url">Further information: <a href="{{markerData.url}}" target="_blank" noopener noreferrer>[LINK]</a></p>
+    <!-- MODE: EDIT -->
+    <div class="detail-edit" *ngIf="mode === 'edit'">
+      <div class="details-name">
+        <h1>{{markerData.name}} </h1>
+        <div class="details-menu">
+          <button *ngIf="isAuth" mat-raised-button class="" (click)="onView()"><fa-icon [icon]="icons.view"></fa-icon> View</button>
+        </div>
+        <mat-card class="edit-form-container">
+          <form #editForm="ngForm" (ngSubmit)="onSubmit(editForm)">
+            <mat-form-field appearance="outline">
+              <mat-label>Title</mat-label>
+              <input matInput
+                    type="text"
+                    id="name"
+                    required
+                    ngModel
+                    name="name"
+                    [(ngModel)]="markerData.name">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Icon Name</mat-label>
+              <input matInput
+                    type="text"
+                    id="icon"
+                    required
+                    ngModel
+                    name="icon"
+                    [(ngModel)]="markerData.icon">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea matInput
+              rows="10"
+              id="desc"
+              required
+              ngModel
+              name="desc"
+              [(ngModel)]="markerData.desc"></textarea>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>URL</mat-label>
+              <input matInput
+                    type="text"
+                    id="url"
+                    required
+                    ngModel
+                    name="url"
+                    [(ngModel)]="markerData.url">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Min. Zoom</mat-label>
+              <input matInput
+                    type="number"
+                    min=-20
+                    max=20
+                    id="minZoom"
+                    required
+                    ngModel
+                    name="minZoom"
+                    [(ngModel)]="markerData.minZoom">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Max. Zoom</mat-label>
+              <input matInput
+                    type="number"
+                    min=-20
+                    max=20
+                    id="maxZoom"
+                    required
+                    ngModel
+                    name="maxZoom"
+                    [(ngModel)]="markerData.maxZoom">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Category</mat-label>
+              <input matInput
+                    type="text"
+                    id="category"
+                    required
+                    ngModel
+                    name="category"
+                    [(ngModel)]="markerData.category">
+            </mat-form-field>
+            <br>
+            <button type="submit" mat-raised-button color="primary" [disabled]="isLoading">
+              <span *ngIf="!isLoading">Submit</span>
+              <span *ngIf="isLoading"><mat-spinner [diameter]="32"></mat-spinner></span>
+            </button>
+          </form>
+        </mat-card>
+      </div>
     </div>
   </div>
 </div>
