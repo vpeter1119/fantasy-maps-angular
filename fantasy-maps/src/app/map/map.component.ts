@@ -244,12 +244,19 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   CreateCustomMarker(feature: GeoJSON.Feature, latlng: L.LatLng) {
-    let iconName = feature.properties.category ? this.categoryIcons[feature.properties.category] : 'ra ra-scroll-unfurled';
+    let iconName = '';
+    if (feature.properties.icon) {
+      iconName = feature.properties.icon;
+    } else if (feature.properties.category) {
+      iconName = this.categoryIcons[feature.properties.category];
+    } else {
+      iconName = 'ra ra-scroll-unfurled';
+    }
     let icon = L.divIcon({
       html: `<div class="custom-map-marker"><i class="${iconName} ra-3x"></i></div>`,
       className: 'custom-map-marker-container',
       iconSize: [40, 40],
-      iconAnchor: [20,60]
+      iconAnchor: [25,65]
     });
     if (feature.properties.category) {
       console.log(`#mapComponent -> CreateCustomMarker() -> feature: ${feature.properties.category}`);
