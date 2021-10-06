@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MapService } from './map.service';
 import { AuthService } from '../auth/auth.service';
+import { IconsService } from 'app/common/icons.service';
 
 export interface MapData {
   id: string,
@@ -62,6 +63,21 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     }
   };
 
+  /* ICON NAMES */
+
+  categoryIcons = {
+    city: 'ra ra-capitol',
+    daedric: 'ra ra-omega',
+    tower: 'ra ra-tower',
+    castle: 'ra ra-castle-flag',
+    mine: 'ra ra-mine-wagon',
+    village: 'ra ra-shovel',
+    ruins: 'ra ra-tombstone',
+    other: 'ra ra-scroll-unfurled',
+    mountain: 'ra ra-mountains',
+    inn: 'ra ra-beer'
+  }
+
   /* General Config Vars */
 
   debug = !environment.production;
@@ -85,7 +101,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   tileLayerString = '';
   geoJsonLayerGroup: L.LayerGroup = new L.LayerGroup();
   geoJsonLayer: L.GeoJSON;
-  defaultMarkerIcon: L.Icon;
+  defaultMarkerIcon: L.DivIcon;
   addMarker: L.Marker;
   contextPopup: L.Popup;
   mapOptions = {
@@ -95,23 +111,25 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     center: L.latLng(0,0,2),
   };
 
+  icons;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private titleService: Title,
     public mapService: MapService,
     private authService: AuthService,
+    private iconsService: IconsService,
   ) {
     // Router config
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.defaultMarkerIcon = new L.Icon({
-      iconUrl: 'assets/icons/position-marker.png',
+    this.icons = this.iconsService.getIcons();
+    console.log(this.icons.user);
+    this.defaultMarkerIcon = L.divIcon({
+      html: '<i class="ra ra-capitol ra-3x"></i>',
+      className: 'custom-map-marker',
       iconSize: [58, 58],
-      iconAnchor: [29, 58],
-      popupAnchor: [0, -43],
-      shadowUrl: '',
-      shadowSize: [0, 0],
-      shadowAnchor: [0,0]
+      iconAnchor: [29,50]
     });
   }
 
@@ -226,7 +244,25 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   CreateCustomMarker(feature: GeoJSON.Feature, latlng: L.LatLng) {
-    var icon = this.defaultMarkerIcon;
+    let iconName = '';
+    if (feature.properties.icon) {
+      iconName = feature.properties.icon;
+    } else if (feature.properties.category) {
+      iconName = this.categoryIcons[feature.properties.category];
+    } else {
+      iconName = 'ra ra-scroll-unfurled';
+    }
+    let icon = L.divIcon({
+      html: `<div class="custom-map-marker"><i class="${iconName} ra-3x"></i></div>`,
+      className: 'custom-map-marker-container',
+      iconSize: [40, 40],
+      iconAnchor: [25,65]
+    });
+    if (feature.properties.category) {
+      console.log(`#mapComponent -> CreateCustomMarker() -> feature: ${feature.properties.category}`);
+      console.log(this.categoryIcons[feature.properties.category]);
+      console.log(icon);
+    }
     let marker = new L.Marker(latlng, {
       icon: icon
     });
@@ -259,6 +295,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   BindDetailsEvent(feature: GeoJSON.Feature, layer: L.GeoJSON) {
+    console.log('#mapComponent -> BindDetailsEvent() -> feature: ', feature);
     layer.on('click', (e) => {
       var data = e.target.feature.properties;
       this.markerClicked.emit(data);
