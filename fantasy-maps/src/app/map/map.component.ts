@@ -258,11 +258,6 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       iconSize: [40, 40],
       iconAnchor: [25,65]
     });
-    if (feature.properties.category) {
-      console.log(`#mapComponent -> CreateCustomMarker() -> feature: ${feature.properties.category}`);
-      console.log(this.categoryIcons[feature.properties.category]);
-      console.log(icon);
-    }
     let marker = new L.Marker(latlng, {
       icon: icon
     });
@@ -295,7 +290,6 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   BindDetailsEvent(feature: GeoJSON.Feature, layer: L.GeoJSON) {
-    console.log('#mapComponent -> BindDetailsEvent() -> feature: ', feature);
     layer.on('click', (e) => {
       var data = e.target.feature.properties;
       this.markerClicked.emit(data);

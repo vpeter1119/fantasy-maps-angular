@@ -7,7 +7,10 @@
   <!-- Content -->
   <div *ngIf="markerData">
     <div class="details-name">
-      <h1>{{markerData.name}}</h1>
+      <h1>{{markerData.name}} </h1>
+      <div class="details-menu">
+        <button *ngIf="isAuth" mat-raised-button class="" (click)="onEdit()"><fa-icon [icon]="icons.edit"></fa-icon> Edit</button>
+      </div>
     </div>
     <div class="details-desc" innerHtml="{{markerData.desc}}"></div>
     <div class="details-url">
