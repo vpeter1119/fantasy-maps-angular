@@ -63,6 +63,21 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     }
   };
 
+  /* ICON NAMES */
+
+  categoryIcons = {
+    city: 'ra ra-capitol',
+    daedric: 'ra ra-omega',
+    tower: 'ra ra-tower',
+    castle: 'ra ra-castle-flag',
+    mine: 'ra ra-mine-wagon',
+    village: 'ra ra-shovel',
+    ruins: 'ra ra-tombstone',
+    other: 'ra ra-scroll-unfurled',
+    mountain: 'ra ra-mountains',
+    inn: 'ra ra-beer'
+  }
+
   /* General Config Vars */
 
   debug = !environment.production;
@@ -111,9 +126,10 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     this.icons = this.iconsService.getIcons();
     console.log(this.icons.user);
     this.defaultMarkerIcon = L.divIcon({
-      html: '<i class="fas fa-user"></i> ICON',
-      className: 'dummy',
+      html: '<i class="ra ra-capitol ra-3x"></i>',
+      className: 'custom-map-marker',
       iconSize: [58, 58],
+      iconAnchor: [29,50]
     });
   }
 
@@ -228,7 +244,18 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   CreateCustomMarker(feature: GeoJSON.Feature, latlng: L.LatLng) {
-    var icon = this.defaultMarkerIcon;
+    let iconName = feature.properties.category ? this.categoryIcons[feature.properties.category] : 'ra ra-scroll-unfurled';
+    let icon = L.divIcon({
+      html: `<div class="custom-map-marker"><i class="${iconName} ra-3x"></i></div>`,
+      className: 'custom-map-marker-container',
+      iconSize: [40, 40],
+      iconAnchor: [20,60]
+    });
+    if (feature.properties.category) {
+      console.log(`#mapComponent -> CreateCustomMarker() -> feature: ${feature.properties.category}`);
+      console.log(this.categoryIcons[feature.properties.category]);
+      console.log(icon);
+    }
     let marker = new L.Marker(latlng, {
       icon: icon
     });
@@ -261,6 +288,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   BindDetailsEvent(feature: GeoJSON.Feature, layer: L.GeoJSON) {
+    console.log('#mapComponent -> BindDetailsEvent() -> feature: ', feature);
     layer.on('click', (e) => {
       var data = e.target.feature.properties;
       this.markerClicked.emit(data);
