@@ -196,6 +196,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     this.tileLayer = newTileLayer;
     this.tileLayerGroup.addLayer(this.tileLayer);
     this.geoJsonSub = this.mapService.getGeoJson(mapToLoad).subscribe((data: GeoJSON.FeatureCollection) => {
+      if (environment.debug) console.log('#mapComponent -> LoadMapContent() -> data: ', data);
       this.LoadGeoJsonData(data);
     });
   };
@@ -253,16 +254,11 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       iconName = 'ra ra-scroll-unfurled';
     }
     let icon = L.divIcon({
-      html: `<div class="custom-map-marker"><i class="${iconName} ra-3x"></i></div>`,
+      html: `<div class="custom-map-marker" id="${feature.id}"><i class="${iconName} ra-3x"></i></div>`,
       className: 'custom-map-marker-container',
       iconSize: [40, 40],
       iconAnchor: [25,65]
     });
-    if (feature.properties.category) {
-      console.log(`#mapComponent -> CreateCustomMarker() -> feature: ${feature.properties.category}`);
-      console.log(this.categoryIcons[feature.properties.category]);
-      console.log(icon);
-    }
     let marker = new L.Marker(latlng, {
       icon: icon
     });
@@ -295,9 +291,10 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   BindDetailsEvent(feature: GeoJSON.Feature, layer: L.GeoJSON) {
-    console.log('#mapComponent -> BindDetailsEvent() -> feature: ', feature);
     layer.on('click', (e) => {
       var data = e.target.feature.properties;
+      data.id = feature.id;
+      if (environment.debug) console.log('#mapComponent -> click event -> data: ', data);
       this.markerClicked.emit(data);
     }); 
   }

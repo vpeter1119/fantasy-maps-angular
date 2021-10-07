@@ -12,5 +12,15 @@ h1 {
 /* Classes */
 
 .content {
-    padding: 5%;
+  padding: 5%;
+  max-height: 800px;
+  overflow: auto;
+}
+
+.details-menu {
+  margin-bottom: 1rem;
+}
+
+.edit-form-container {
+  background-color: #424242;
 }
