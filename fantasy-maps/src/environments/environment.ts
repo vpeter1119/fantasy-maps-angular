@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiRoot: 'https://mcrpc-server.petervertesi.com/api'
+  apiRoot: 'http://localhost:3000/api'
 };
 
 /*
