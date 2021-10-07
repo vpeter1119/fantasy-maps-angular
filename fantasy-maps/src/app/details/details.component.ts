@@ -1,6 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'app/auth/auth.service';
 import { IconsService } from 'app/common/icons.service';
+import { MapService } from 'app/map/map.service';
+import { environment } from 'environments/environment';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,7 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class DetailsComponent implements OnInit, OnDestroy {
 
-  @Input() markerData: object;
+  @Input() markerData: GeoJSON.GeoJsonProperties;
 
   isAuth: boolean;
   isAuthSub: Subscription = new Subscription();
@@ -21,7 +23,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private iconsService: IconsService
+    private iconsService: IconsService,
+    private mapService: MapService
   ) {
     this.isAuth = false;
     this.currentUser = null;
@@ -54,5 +57,22 @@ export class DetailsComponent implements OnInit, OnDestroy {
   onView() {
     this.mode = 'view';
   }
+
+  onSave(formData) {
+    let id = this.markerData.id;
+    let oldData = this.markerData;
+    let newData = formData.value;
+    delete oldData.id;
+    newData.map = oldData.map;
+    if (JSON.stringify(newData) == JSON.stringify(oldData)) {
+      if (environment.debug) console.log('#detailsComponent -> onSave(): No change in record ', id);
+      this.mode = 'view';
+    } else {
+      if (environment.debug) console.log('#detailsComponent -> onSave(): Updating record ', id, newData);
+      this.mapService.putGeoJson(id, newData);
+      this.mode = 'view';
+    }
+  }
+    
 
 }

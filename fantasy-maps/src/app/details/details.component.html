@@ -27,7 +27,7 @@
           <button *ngIf="isAuth" mat-raised-button class="" (click)="onView()"><fa-icon [icon]="icons.view"></fa-icon> View</button>
         </div>
         <mat-card class="edit-form-container">
-          <form #editForm="ngForm" (ngSubmit)="onSubmit(editForm)">
+          <form #editForm="ngForm" (ngSubmit)="onSave(editForm)">
             <mat-form-field appearance="outline">
               <mat-label>Title</mat-label>
               <input matInput
@@ -43,7 +43,6 @@
               <input matInput
                     type="text"
                     id="icon"
-                    required
                     ngModel
                     name="icon"
                     [(ngModel)]="markerData.icon">
@@ -75,7 +74,6 @@
                     min=-20
                     max=20
                     id="minZoom"
-                    required
                     ngModel
                     name="minZoom"
                     [(ngModel)]="markerData.minZoom">
@@ -87,7 +85,6 @@
                     min=-20
                     max=20
                     id="maxZoom"
-                    required
                     ngModel
                     name="maxZoom"
                     [(ngModel)]="markerData.maxZoom">
@@ -103,8 +100,8 @@
                     [(ngModel)]="markerData.category">
             </mat-form-field>
             <br>
-            <button type="submit" mat-raised-button color="primary" [disabled]="isLoading">
-              <span *ngIf="!isLoading">Submit</span>
+            <button type="submit" mat-raised-button color="primary" [disabled]="isLoading || !editForm.valid">
+              <span *ngIf="!isLoading">Save</span>
               <span *ngIf="isLoading"><mat-spinner [diameter]="32"></mat-spinner></span>
             </button>
           </form>
