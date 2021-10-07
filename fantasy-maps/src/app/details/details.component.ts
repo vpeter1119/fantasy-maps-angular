@@ -61,7 +61,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
   onSave(formData) {
     let id = this.markerData.id;
     let oldData = this.markerData;
+    if (environment.debug) console.log('#detailsComponent -> onSave(): oldData: ', oldData);
     let newData = formData.value;
+    if (environment.debug) console.log('#detailsComponent -> onSave(): newData: ', newData);
     delete oldData.id;
     newData.map = oldData.map;
     if (JSON.stringify(newData) == JSON.stringify(oldData)) {
@@ -70,6 +72,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     } else {
       if (environment.debug) console.log('#detailsComponent -> onSave(): Updating record ', id, newData);
       this.mapService.putGeoJson(id, newData);
+      this.markerData = newData;
       this.mode = 'view';
     }
   }

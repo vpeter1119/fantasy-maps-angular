@@ -36,7 +36,7 @@
                     required
                     ngModel
                     name="name"
-                    [(ngModel)]="markerData.name">
+                    [ngModel]="markerData.name">
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Icon Name</mat-label>
@@ -45,7 +45,7 @@
                     id="icon"
                     ngModel
                     name="icon"
-                    [(ngModel)]="markerData.icon">
+                    [ngModel]="markerData.icon">
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Description</mat-label>
@@ -55,7 +55,7 @@
               required
               ngModel
               name="desc"
-              [(ngModel)]="markerData.desc"></textarea>
+              [ngModel]="markerData.desc"></textarea>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>URL</mat-label>
@@ -65,7 +65,7 @@
                     required
                     ngModel
                     name="url"
-                    [(ngModel)]="markerData.url">
+                    [ngModel]="markerData.url">
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Min. Zoom</mat-label>
@@ -76,7 +76,7 @@
                     id="minZoom"
                     ngModel
                     name="minZoom"
-                    [(ngModel)]="markerData.minZoom">
+                    [ngModel]="markerData.minZoom">
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Max. Zoom</mat-label>
@@ -87,7 +87,7 @@
                     id="maxZoom"
                     ngModel
                     name="maxZoom"
-                    [(ngModel)]="markerData.maxZoom">
+                    [ngModel]="markerData.maxZoom">
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Category</mat-label>
@@ -97,7 +97,7 @@
                     required
                     ngModel
                     name="category"
-                    [(ngModel)]="markerData.category">
+                    [ngModel]="markerData.category">
             </mat-form-field>
             <br>
             <button type="submit" mat-raised-button color="primary" [disabled]="isLoading || !editForm.valid">
@@ -108,5 +108,6 @@
         </mat-card>
       </div>
     </div>
+    {{markerData | json}}
   </div>
 </div>
