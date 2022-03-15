@@ -9,8 +9,8 @@ export class AppComponent implements OnInit {
 
   isLoading: boolean = true;
   title = 'fantasy-maps';
-  mapId = 'highrock';
-  mapId2 = 'faerun';
+  mapId2 = 'highrock';
+  mapId = 'forgotten-realms';
   markerData: string;
 
   ngOnInit(): void {

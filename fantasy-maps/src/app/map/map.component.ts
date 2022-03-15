@@ -37,8 +37,9 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   /* Placeholder Map Data */
 
   maps = {
-    highrock: {
+    "highrock": {
       id: 'highrock',
+      folderName: 'highrock',
       name: 'High Rock',
       height: 4096,
       width: 4096,
@@ -49,8 +50,9 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       initZoom: 3,
       initCenter: [-1942, 1294, 3]
     },
-    faerun: {
-      id: 'faerun',
+    "forgotten-realms": {
+      id: 'forgotten-realms',
+      folderName: 'faerun',
       name: 'Forgotten Realms',
       height: 8192,
       width: 8192,
@@ -58,7 +60,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
       factory: 0.03125,
       minZoom: 2,
       maxZoom: 5,
-      initZoom: 5,
+      initZoom: 4,
       initCenter: [-1500,3500, 5]
     }
   };
@@ -181,7 +183,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     }
     
     this.titleService.setTitle(`${this.chosenMap.name} | Fantasy Maps by Peter Vertesi`);
-    var newTileLayerString = `assets/${mapToLoad}/tiles/{z}-{x}-{y}.jpg`;
+    var newTileLayerString = `assets/${this.maps[mapToLoad].folderName}/tiles/{z}-{x}-{y}.jpg`;
     var tileLayerOptions = {
       bounds: this.layerbounds,
       tileSize: L.point(256, 256),
@@ -282,6 +284,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     e.originalEvent.preventDefault();
     this.contextPopup = L.popup();
     this.contextPopup.setLatLng(e.latlng);
+    if (environment.debug) console.log('#mapComponent -> e.latlng: ', e.latlng);
     if (this.authService.getIsAuth()) {
       this.contextPopup.setContent(`<p><button mat-button>[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
     } else {
