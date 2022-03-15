@@ -25,6 +25,7 @@ import { DetailsComponent } from './details/details.component';
 import { AuthComponent } from './auth/auth.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { ContextMenuComponent } from './context-menu/context-menu.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     NavbarComponent,
     DetailsComponent,
     AuthComponent,
-    LoginComponent
+    LoginComponent,
+    ContextMenuComponent
   ],
   imports: [
     AppRoutingModule,

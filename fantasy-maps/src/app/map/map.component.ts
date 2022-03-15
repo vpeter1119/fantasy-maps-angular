@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, ComponentFactoryResolver, Injector, ComponentRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { MapService } from './map.service';
 import { AuthService } from '../auth/auth.service';
 import { IconsService } from 'app/common/icons.service';
+import { ContextMenuComponent } from 'app/context-menu/context-menu.component';
 
 export interface MapData {
   id: string,
@@ -114,6 +115,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   icons;
+  component: ComponentRef<ContextMenuComponent>;
 
   constructor(
     private router: Router,
@@ -122,6 +124,8 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     public mapService: MapService,
     private authService: AuthService,
     private iconsService: IconsService,
+    private resolver: ComponentFactoryResolver,
+    private injector: Injector
   ) {
     // Router config
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -282,11 +286,14 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
   OpenContextPopup(e) {
     if (this.contextPopup) this.contextPopup.closePopup();
     e.originalEvent.preventDefault();
+    this.component = this.resolver.resolveComponentFactory(ContextMenuComponent).create(this.injector);
+    this.component.changeDetectorRef.detectChanges();
     this.contextPopup = L.popup();
     this.contextPopup.setLatLng(e.latlng);
     if (environment.debug) console.log('#mapComponent -> e.latlng: ', e.latlng);
     if (this.authService.getIsAuth()) {
-      this.contextPopup.setContent(`<p><button mat-button>[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
+      //this.contextPopup.setContent(`<p><button mat-button (click)="onAddMarker()">[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
+      this.contextPopup.setContent(this.component.location.nativeElement);
     } else {
       this.contextPopup.setContent(`<p>You are not allowed to use this feature! Please log in first.</p>`);
     }
@@ -317,6 +324,10 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     //Convert map-specific coordinates to standard Leaflet LatLng
     let latlng = new L.LatLng(-original[1], original[0]);
     return latlng;
+  }
+
+  onAddMarker(): void {
+    console.log('#mapComponent -> onAddMarker() called');
   }
 
   ngOnDestroy(): void {
