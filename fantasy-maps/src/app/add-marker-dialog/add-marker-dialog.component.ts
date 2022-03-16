@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MapService } from 'app/map/map.service';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-add-marker-dialog',
@@ -21,6 +22,7 @@ export class AddMarkerDialogComponent implements OnInit {
   }
 
   onSubmit(formData) {
+    if (environment.debug) console.log('#addMarkerComponent -> onSubmit() -> formData.value: ', formData.value);
     this.isLoading = true;
     var newMarkerData = {
       type: "Feature",
@@ -31,6 +33,7 @@ export class AddMarkerDialogComponent implements OnInit {
       properties: {
         name: formData.value.title,
         icon: formData.value.icon,
+        desc: formData.value.desc,
         url: formData.value.url,
         map: "forgotten-realms",
         category: formData.value.category

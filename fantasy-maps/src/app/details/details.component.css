@@ -24,3 +24,7 @@ h1 {
 .edit-form-container {
   background-color: #424242;
 }
+
+::ng-deep .ql-toolbar {
+  background-color: #D5B783 !important;
+}

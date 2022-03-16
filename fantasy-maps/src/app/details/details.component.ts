@@ -63,6 +63,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     let oldData = this.markerData;
     if (environment.debug) console.log('#detailsComponent -> onSave(): oldData: ', oldData);
     let newData = formData.value;
+    //newData.desc = this.markerData.desc;
     if (environment.debug) console.log('#detailsComponent -> onSave(): newData: ', newData);
     delete oldData.id;
     newData.map = oldData.map;

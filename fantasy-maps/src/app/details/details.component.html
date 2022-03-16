@@ -14,7 +14,7 @@
           <button *ngIf="isAuth" mat-raised-button class="" (click)="onEdit()"><fa-icon [icon]="icons.edit"></fa-icon> Edit</button>
         </div>
       </div>
-      <div class="details-desc" innerHtml="{{markerData.desc}}"></div>
+      <div class="details-desc" [innerHtml]="markerData.desc"></div>
       <div class="details-url">
         <p *ngIf="markerData.url">Further information: <a href="{{markerData.url}}" target="_blank" noopener noreferrer>[LINK]</a></p>
       </div>
@@ -47,7 +47,8 @@
                     name="icon"
                     [ngModel]="markerData.icon">
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <quill-editor style="height: 300px;" name="desc" [ngModel]="markerData.desc"></quill-editor>
+            <!-- <mat-form-field appearance="outline">
               <mat-label>Description</mat-label>
               <textarea matInput
               rows="10"
@@ -56,7 +57,7 @@
               ngModel
               name="desc"
               [ngModel]="markerData.desc"></textarea>
-            </mat-form-field>
+            </mat-form-field> -->
             <mat-form-field appearance="outline">
               <mat-label>URL</mat-label>
               <input matInput
