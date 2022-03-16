@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IconsService } from 'app/common/icons.service';
+import { MapService } from 'app/map/map.service';
+import { GeoJSONOptions, LatLng } from 'leaflet';
 
 @Component({
   selector: 'app-context-menu',
@@ -8,16 +10,12 @@ import { IconsService } from 'app/common/icons.service';
 })
 export class ContextMenuComponent implements OnInit {
 
-  @Input() latlng: number[];
-  //@Input() mapId: string;
+  position: LatLng;
   icons;
-  options = [
-    {display: "Add Marker", function: this.onAddMarker(), active: true},
-    {display: "Begin Line", function: this.onAddMarker(), active: false}
-  ]  
 
   constructor(
-    private iconsService: IconsService
+    private iconsService: IconsService,
+    private mapService: MapService
   ) {
     this.icons = this.iconsService.getIcons();
   }
@@ -26,7 +24,21 @@ export class ContextMenuComponent implements OnInit {
   }
 
   onAddMarker(): void {
-    console.log('#contextMenuComponent -> onAddMarker() called');
+    this.position = this.mapService.getContextPosition();
+    console.log('#contextMenuComponent -> onAddMarker() called ', this.position);
+    var newMarkerData = {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: this.mapService.LatLngToCoordinates(this.position)
+      },
+      properties: {
+        name: "New Marker",
+        map: "forgotten-realms",
+        category: "other"
+      }
+    }
+    this.mapService.postGeoJson(newMarkerData);
   }
 
 }

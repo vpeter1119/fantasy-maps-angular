@@ -290,6 +290,7 @@ export class MapComponent implements OnInit, OnChanges, OnDestroy {
     this.component.changeDetectorRef.detectChanges();
     this.contextPopup = L.popup();
     this.contextPopup.setLatLng(e.latlng);
+    this.mapService.setContextPosition(e.latlng);
     if (environment.debug) console.log('#mapComponent -> e.latlng: ', e.latlng);
     if (this.authService.getIsAuth()) {
       //this.contextPopup.setContent(`<p><button mat-button (click)="onAddMarker()">[+] Add Marker</button><p><p><button mat-button>[+] Begin Line</button></p><p><button mat-button>[X] Close</button></p>`);
