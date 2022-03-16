@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { AddMarkerDialogComponent } from 'app/add-marker-dialog/add-marker-dialog.component';
 import { IconsService } from 'app/common/icons.service';
 import { MapService } from 'app/map/map.service';
 import { GeoJSONOptions, LatLng } from 'leaflet';
@@ -15,7 +17,8 @@ export class ContextMenuComponent implements OnInit {
 
   constructor(
     private iconsService: IconsService,
-    private mapService: MapService
+    private mapService: MapService,
+    public dialog: MatDialog
   ) {
     this.icons = this.iconsService.getIcons();
   }
@@ -24,21 +27,14 @@ export class ContextMenuComponent implements OnInit {
   }
 
   onAddMarker(): void {
-    this.position = this.mapService.getContextPosition();
-    console.log('#contextMenuComponent -> onAddMarker() called ', this.position);
-    var newMarkerData = {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: this.mapService.LatLngToCoordinates(this.position)
-      },
-      properties: {
-        name: "New Marker",
-        map: "forgotten-realms",
-        category: "other"
-      }
-    }
-    this.mapService.postGeoJson(newMarkerData);
+    const dialogRef = this.dialog.open(AddMarkerDialogComponent, {
+      width: '300px'
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      //this.isAuth = this.authService.getIsAuth();
+      //this.currentUser = this.authService.getCurrentUserRaw();
+      //console.log('#navbarComponent -> onOpenLogin() -> currentUser: ', this.currentUser);
+    });
   }
 
 }

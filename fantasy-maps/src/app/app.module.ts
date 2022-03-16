@@ -26,6 +26,7 @@ import { AuthComponent } from './auth/auth.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { ContextMenuComponent } from './context-menu/context-menu.component';
+import { AddMarkerDialogComponent } from './add-marker-dialog/add-marker-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ContextMenuComponent } from './context-menu/context-menu.component';
     DetailsComponent,
     AuthComponent,
     LoginComponent,
-    ContextMenuComponent
+    ContextMenuComponent,
+    AddMarkerDialogComponent
   ],
   imports: [
     AppRoutingModule,
