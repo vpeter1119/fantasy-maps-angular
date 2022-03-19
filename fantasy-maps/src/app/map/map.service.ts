@@ -23,6 +23,66 @@ export class MapService {
   geoJsonDataListener = new Subject();
   currentMap: string;
   contextPosition: LatLng;
+  selectedData;
+
+  maps = [
+    {
+      id: 'forgotten-realms',
+      folderName: 'faerun',
+      title: 'Forgotten Realms',
+      height: 8192,
+      width: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 4,
+      initCenter: [-1500,3500],
+      bounds: [[0, 8192],[-8192,0]]
+    },
+    {
+      id: 'highrock',
+      folderName: 'highrock',
+      title: 'High Rock',
+      height: 4096,
+      width: 4096,
+      factorx: 0.0625,
+      factory: 0.0625,
+      minZoom: 1,
+      maxZoom: 4,
+      initZoom: 3,
+      initCenter: [-1942, 1294],
+      bounds: [[0, 4096],[-4096,0]]
+    },
+    {
+      id: 'eriador',
+      folderName: 'eriador',
+      title: 'Eriador',
+      width: 8192,
+      height: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 2,
+      initCenter: [-4096,4096],
+      bounds: [[0, 8192],[-8192,0]]
+    },
+    {
+      id: 'shire',
+      folderName: 'shire',
+      title: 'A Megye',
+      width: 8192,
+      height: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 2,
+      initCenter: [-4096,4096],
+      bounds: [[0, 8192],[-8192,0]]
+    },
+  ]
 
   constructor(
     private http: HttpClient
@@ -92,6 +152,30 @@ export class MapService {
     //Convert map-specific coordinates to standard Leaflet LatLng
     let latlng = new LatLng(-original[1], original[0]);
     return latlng;
+  }
+
+  getMaps() {
+    return this.maps;
+  }
+
+  getMap(id: string) {
+    return this.maps.find(map => map.id == id);
+  }
+
+  getSelectedData() {
+    return this.selectedData;
+  }
+
+  setSelectedData(data) {
+    this.selectedData = data;
+  }
+
+  getCurrentMapId(): string {
+    return this.currentMap;
+  }
+
+  setCurrentMapId(id: string) {
+    this.currentMap = id;
   }
 
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,13 @@ export class AppComponent implements OnInit {
   mapId = 'forgotten-realms';
   markerData: string;
 
+  constructor(
+    private router: Router
+  ) {}
+
   ngOnInit(): void {
     this.isLoading = false;
+    //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   changeMap(id: string) {

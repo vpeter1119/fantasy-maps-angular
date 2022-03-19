@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -29,6 +30,8 @@ import { LoginComponent } from './auth/login/login.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { AddMarkerDialogComponent } from './add-marker-dialog/add-marker-dialog.component';
+import { MapNewComponent } from './map-new/map-new.component';
+import { MapContainerComponent } from './map-container/map-container.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,9 @@ import { AddMarkerDialogComponent } from './add-marker-dialog/add-marker-dialog.
     AuthComponent,
     LoginComponent,
     ContextMenuComponent,
-    AddMarkerDialogComponent
+    AddMarkerDialogComponent,
+    MapNewComponent,
+    MapContainerComponent
   ],
   imports: [
     AppRoutingModule,
@@ -71,6 +76,7 @@ import { AddMarkerDialogComponent } from './add-marker-dialog/add-marker-dialog.
     })
   ],
   providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy},
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     Title,
   ],

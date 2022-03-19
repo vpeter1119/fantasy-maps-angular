@@ -7,8 +7,8 @@
     <span class="navbar-spacer"></span>
     <!-- Desktop navigation -->
     <div class="navmenu-desktop">
-      <button mat-button (click)="onClick('highrock')">High Rock</button>
-      <button mat-button (click)="onClick('forgotten-realms')">Forgotten Realms</button>
+      <button *ngFor="let map of maps" mat-button (click)="navigateTo(map.id)">{{map.title}}</button>
+      <!-- <a mat-button href="/map/forgotten-realms">Forgotten Realms</a> -->
     </div>
   </mat-toolbar>
   <mat-toolbar fxHide fxShow.lt-md>
@@ -22,8 +22,7 @@
     <!-- Mobile navigation -->
     <div class="navmenu-mobile">
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onClick('highrock')">High Rock</button>
-        <button mat-button (click)="onClick('forgotten-realms')">Forgotten Realms</button>
+        <button *ngFor="let map of maps" mat-button (click)="navigateTo(map.id)">{{map.title}}</button>
       </mat-menu>
     </div>
   </mat-toolbar>

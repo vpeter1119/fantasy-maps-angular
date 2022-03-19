@@ -22,6 +22,7 @@ export class AddMarkerDialogComponent implements OnInit {
   }
 
   onSubmit(formData) {
+    var mapId = this.mapService.getCurrentMapId();
     if (environment.debug) console.log('#addMarkerComponent -> onSubmit() -> formData.value: ', formData.value);
     this.isLoading = true;
     var newMarkerData = {
@@ -35,13 +36,13 @@ export class AddMarkerDialogComponent implements OnInit {
         icon: formData.value.icon,
         desc: formData.value.desc,
         url: formData.value.url,
-        map: "forgotten-realms",
+        map: mapId,
         category: formData.value.category
       }
     }
     this.mapService.postGeoJson(newMarkerData);
     this.dialogRef.close();
-    this.mapService.fetchGeoJson('forgotten-realms');
+    this.mapService.fetchGeoJson(mapId);
   }
 
 }
