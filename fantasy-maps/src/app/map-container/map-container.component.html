@@ -6,6 +6,7 @@
     <br fxHide fxShow.lt-md/>
     <div class="map-view" fxFlex="70%" fxFlex.lt-md="100%">
         <mat-spinner *ngIf="isLoading" style="margin: auto; top: 40%"></mat-spinner>
-        <app-map [mapId]="mapId" (markerClicked)="displayDetails($event)" *ngIf="!isLoading"></app-map>
+        <!-- <app-map [mapId]="mapId" (markerClicked)="displayDetails($event)" *ngIf="!isLoading"></app-map> -->
+        <app-map-new [mapId]="mapId" (markerClicked)="displayDetails($event)" *ngIf="!isLoading"></app-map-new>
     </div>
 </div>

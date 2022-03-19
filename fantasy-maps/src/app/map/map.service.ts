@@ -23,19 +23,85 @@ export class MapService {
   geoJsonDataListener = new Subject();
   currentMap: string;
   contextPosition: LatLng;
+  selectedData;
 
   maps = [
     {
       id: 'eriador',
+      folderName: 'eriador',
       title: 'Eriador',
       width: 8192,
       height: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
       minZoom: 2,
       maxZoom: 5,
       initZoom: 2,
-      initCenter: [0,0]
+      initCenter: [-4096,4096],
+      bounds: [[0, 8192],[-8192,0]]
+    },
+    {
+      id: 'forgotten-realms',
+      folderName: 'faerun',
+      title: 'Forgotten Realms',
+      height: 8192,
+      width: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 4,
+      initCenter: [-1500,3500],
+      bounds: [[0, 8192],[-8192,0]]
+    },
+    {
+      id: 'highrock',
+      folderName: 'highrock',
+      title: 'High Rock',
+      height: 4096,
+      width: 4096,
+      factorx: 0.0625,
+      factory: 0.0625,
+      minZoom: 1,
+      maxZoom: 4,
+      initZoom: 3,
+      initCenter: [-1942, 1294],
+      bounds: [[0, 4096],[-4096,0]]
     }
   ]
+
+  /*
+  
+
+  maps = {
+    "highrock": {
+      id: 'highrock',
+      folderName: 'highrock',
+      name: 'High Rock',
+      height: 4096,
+      width: 4096,
+      factorx: 0.0625,
+      factory: 0.0625,
+      minZoom: 1,
+      maxZoom: 4,
+      initZoom: 3,
+      initCenter: [-1942, 1294, 3]
+    },
+    "forgotten-realms": {
+      id: 'forgotten-realms',
+      folderName: 'faerun',
+      name: 'Forgotten Realms',
+      height: 8192,
+      width: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 4,
+      initCenter: [-1500,3500, 5]
+    }
+  };
+  */
 
   constructor(
     private http: HttpClient
@@ -113,6 +179,14 @@ export class MapService {
 
   getMap(id: string) {
     return this.maps.find(map => map.id == id);
+  }
+
+  getSelectedData() {
+    return this.selectedData;
+  }
+
+  setSelectedData(data) {
+    this.selectedData = data;
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-map-container',
@@ -35,6 +36,7 @@ export class MapContainerComponent implements OnInit {
   }
 
   displayDetails(data) {
+    if (environment.debug) console.log('#mapContainerComponent -> displayDetails() -> data: ', data);
     this.markerData = data;
   }
 

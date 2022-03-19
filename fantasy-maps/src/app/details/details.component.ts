@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from 'app/auth/auth.service';
 import { IconsService } from 'app/common/icons.service';
 import { MapService } from 'app/map/map.service';
@@ -10,9 +10,24 @@ import { Subscription } from 'rxjs';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent implements OnInit, OnDestroy {
+export class DetailsComponent implements OnInit, OnDestroy, OnChanges {
 
-  @Input() markerData: GeoJSON.GeoJsonProperties;
+  _markerData: GeoJSON.GeoJsonProperties;
+  
+  //@Input() markerData: GeoJSON.GeoJsonProperties;
+  @Input() set markerData(data: GeoJSON.GeoJsonProperties) {
+    
+    this._markerData = data;
+    if (environment.debug) console.log('#detailsComponent -> set markerData(): ', data);
+    //this.doSomething(this._markerData);
+ 
+  }
+  
+  get categoryId(): GeoJSON.GeoJsonProperties {
+  
+      return this._markerData;
+  
+  }
 
   isAuth: boolean;
   isAuthSub: Subscription = new Subscription();
@@ -43,6 +58,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
       this.currentUser = user;
     });
     this.currentUser = this.authService.getCurrentUserRaw();
+    //this._markerData = this.mapService.selectedData;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (environment.debug) console.log('#detailsComponent -> ngOnChanges() -> changes: ', changes);
   }
 
   ngOnDestroy(): void {
@@ -59,11 +79,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   onSave(formData) {
-    let id = this.markerData.id;
-    let oldData = this.markerData;
+    let id = this._markerData.id;
+    let oldData = this._markerData;
     if (environment.debug) console.log('#detailsComponent -> onSave(): oldData: ', oldData);
     let newData = formData.value;
-    //newData.desc = this.markerData.desc;
+    //newData.desc = this._markerData.desc;
     if (environment.debug) console.log('#detailsComponent -> onSave(): newData: ', newData);
     delete oldData.id;
     newData.map = oldData.map;
@@ -73,7 +93,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     } else {
       if (environment.debug) console.log('#detailsComponent -> onSave(): Updating record ', id, newData);
       this.mapService.putGeoJson(id, newData);
-      this.markerData = newData;
+      this._markerData = newData;
       this.mode = 'view';
     }
   }
