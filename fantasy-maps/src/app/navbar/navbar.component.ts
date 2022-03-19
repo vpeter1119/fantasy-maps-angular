@@ -37,6 +37,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     if (this.authService.getIsAuth()) {
       console.log('#navbarComponent -> ngOnInit() \n Auth data from service used.');
       this.isAuth = true;
@@ -63,6 +64,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   GoTo(path: string) {
     this.router.navigate([path]);
+  }
+
+  navigateTo(id: string) {
+    console.log(id);
+    this.router.navigate(['map', id]);
   }
 
   onOpenLogin() {

@@ -7,7 +7,7 @@
     <span class="navbar-spacer"></span>
     <!-- Desktop navigation -->
     <div class="navmenu-desktop">
-      <a *ngFor="let map of maps" mat-button href="/map/{{map.id}}">{{map.title}}</a>
+      <button *ngFor="let map of maps" mat-button (click)="navigateTo(map.id)">{{map.title}}</button>
       <!-- <a mat-button href="/map/forgotten-realms">Forgotten Realms</a> -->
     </div>
   </mat-toolbar>
@@ -22,7 +22,7 @@
     <!-- Mobile navigation -->
     <div class="navmenu-mobile">
       <mat-menu #menu="matMenu">
-        <a *ngFor="let map of maps" mat-button href="/map/{{map.id}}">{{map.title}}</a>
+        <button *ngFor="let map of maps" mat-button (click)="navigateTo(map.id)">{{map.title}}</button>
       </mat-menu>
     </div>
   </mat-toolbar>

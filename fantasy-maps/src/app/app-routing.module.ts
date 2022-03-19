@@ -7,6 +7,8 @@ import { MapComponent } from './map/map.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'map/forgotten-realms', pathMatch: 'full' },
+  { path: 'map', redirectTo: 'map/forgotten-realms', pathMatch: 'full' },
+  { path: 'maps', redirectTo: 'map/forgotten-realms', pathMatch: 'full' },
   { path: 'map/:mapId', component: MapContainerComponent },
   { path: 'map-new', component: MapNewComponent },
 ];

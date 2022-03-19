@@ -22,8 +22,9 @@ export class MapContainerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (environment.debug) console.warn('#mapContainerComponent ngOnInit()');
     this.isLoading = false;
-    //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.mapId = this.route.snapshot.paramMap.get('mapId');
   }
 
