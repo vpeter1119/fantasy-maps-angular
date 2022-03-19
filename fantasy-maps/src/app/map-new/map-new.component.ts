@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, EventEmitter, Injector, Input, NgZone, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from 'app/auth/auth.service';
 import { IconsService } from 'app/common/icons.service';
@@ -55,7 +55,8 @@ export class MapNewComponent implements OnInit, OnChanges {
     private authService: AuthService,
     private iconsService: IconsService,
     private resolver: ComponentFactoryResolver,
-    private injector: Injector
+    private injector: Injector,
+    private zone: NgZone
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -156,11 +157,15 @@ export class MapNewComponent implements OnInit, OnChanges {
   }
 
   BindDetailsEvent(feature: GeoJSON.Feature, layer: L.GeoJSON) {
-    layer.on('click', (e) => {
+    layer.on('click', (e: LeafletMouseEvent) => {
       var data = e.target.feature.properties;
       data.id = feature.id;
+      data.geometry = e.target.feature.geometry;
       if (environment.debug) console.log('#mapComponent -> click event -> data: ', data);
-      this.markerClicked.emit(data);
+      this.zone.run(() => {
+        this.markerClicked.emit(data);
+      })
+      //this.onClick(e);
       //this.mapService.setSelectedData(data);
     }); 
   }

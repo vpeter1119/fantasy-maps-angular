@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from 'app/auth/auth.service';
 import { IconsService } from 'app/common/icons.service';
 import { MapService } from 'app/map/map.service';
@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-details',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
@@ -25,7 +26,8 @@ export class DetailsComponent implements OnInit, OnDestroy, OnChanges {
   
   get categoryId(): GeoJSON.GeoJsonProperties {
   
-      return this._markerData;
+    if (environment.debug) console.log('#detailsComponent -> get markerData(): ');  
+    return this._markerData;
   
   }
 

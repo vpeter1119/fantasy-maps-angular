@@ -27,20 +27,6 @@ export class MapService {
 
   maps = [
     {
-      id: 'eriador',
-      folderName: 'eriador',
-      title: 'Eriador',
-      width: 8192,
-      height: 8192,
-      factorx: 0.03125,
-      factory: 0.03125,
-      minZoom: 2,
-      maxZoom: 5,
-      initZoom: 2,
-      initCenter: [-4096,4096],
-      bounds: [[0, 8192],[-8192,0]]
-    },
-    {
       id: 'forgotten-realms',
       folderName: 'faerun',
       title: 'Forgotten Realms',
@@ -67,7 +53,35 @@ export class MapService {
       initZoom: 3,
       initCenter: [-1942, 1294],
       bounds: [[0, 4096],[-4096,0]]
-    }
+    },
+    {
+      id: 'eriador',
+      folderName: 'eriador',
+      title: 'Eriador',
+      width: 8192,
+      height: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 2,
+      initCenter: [-4096,4096],
+      bounds: [[0, 8192],[-8192,0]]
+    },
+    {
+      id: 'shire',
+      folderName: 'shire',
+      title: 'A Megye',
+      width: 8192,
+      height: 8192,
+      factorx: 0.03125,
+      factory: 0.03125,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 2,
+      initCenter: [-4096,4096],
+      bounds: [[0, 8192],[-8192,0]]
+    },
   ]
 
   constructor(

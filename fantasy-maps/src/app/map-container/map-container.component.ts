@@ -14,7 +14,7 @@ export class MapContainerComponent implements OnInit {
   //mapId2 = 'highrock';
   //mapId = 'forgotten-realms';
   mapId: string;
-  markerData: string;
+  markerData;
 
   constructor(
     private router: Router,
@@ -38,6 +38,7 @@ export class MapContainerComponent implements OnInit {
   displayDetails(data) {
     if (environment.debug) console.log('#mapContainerComponent -> displayDetails() -> data: ', data);
     this.markerData = data;
+    if (environment.debug) console.log('#mapContainerComponent -> displayDetails() -> this.markerData: ', this.markerData);
   }
 
 }

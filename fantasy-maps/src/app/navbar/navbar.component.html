@@ -22,8 +22,7 @@
     <!-- Mobile navigation -->
     <div class="navmenu-mobile">
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onClick('highrock')">High Rock</button>
-        <button mat-button (click)="onClick('forgotten-realms')">Forgotten Realms</button>
+        <a *ngFor="let map of maps" mat-button href="/map/{{map.id}}">{{map.title}}</a>
       </mat-menu>
     </div>
   </mat-toolbar>
