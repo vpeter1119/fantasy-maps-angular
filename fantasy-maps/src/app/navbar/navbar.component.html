@@ -7,8 +7,8 @@
     <span class="navbar-spacer"></span>
     <!-- Desktop navigation -->
     <div class="navmenu-desktop">
-      <a mat-button href="/map/highrock">High Rock</a>
-      <a mat-button href="/map/forgotten-realms">Forgotten Realms</a>
+      <a *ngFor="let map of maps" mat-button href="/map/{{map.id}}">{{map.title}}</a>
+      <!-- <a mat-button href="/map/forgotten-realms">Forgotten Realms</a> -->
     </div>
   </mat-toolbar>
   <mat-toolbar fxHide fxShow.lt-md>

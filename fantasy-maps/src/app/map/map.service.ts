@@ -70,39 +70,6 @@ export class MapService {
     }
   ]
 
-  /*
-  
-
-  maps = {
-    "highrock": {
-      id: 'highrock',
-      folderName: 'highrock',
-      name: 'High Rock',
-      height: 4096,
-      width: 4096,
-      factorx: 0.0625,
-      factory: 0.0625,
-      minZoom: 1,
-      maxZoom: 4,
-      initZoom: 3,
-      initCenter: [-1942, 1294, 3]
-    },
-    "forgotten-realms": {
-      id: 'forgotten-realms',
-      folderName: 'faerun',
-      name: 'Forgotten Realms',
-      height: 8192,
-      width: 8192,
-      factorx: 0.03125,
-      factory: 0.03125,
-      minZoom: 2,
-      maxZoom: 5,
-      initZoom: 4,
-      initCenter: [-1500,3500, 5]
-    }
-  };
-  */
-
   constructor(
     private http: HttpClient
   ) { }
@@ -187,6 +154,14 @@ export class MapService {
 
   setSelectedData(data) {
     this.selectedData = data;
+  }
+
+  getCurrentMapId(): string {
+    return this.currentMap;
+  }
+
+  setCurrentMapId(id: string) {
+    this.currentMap = id;
   }
 
 }

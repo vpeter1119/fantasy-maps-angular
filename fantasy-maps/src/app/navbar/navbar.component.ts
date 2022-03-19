@@ -8,6 +8,7 @@ import { LoginComponent } from '../auth/login/login.component';
 import { AuthService } from '../auth/auth.service';
 import { IconsService } from '../common/icons.service';
 import { Subscription } from 'rxjs';
+import { MapService } from 'app/map/map.service';
 
 @Component({
   selector: 'app-navbar',
@@ -23,12 +24,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAuth: boolean = false;
   currentUser;
   currentUserSub: Subscription = new Subscription();
+  maps;
 
   constructor(
     public router: Router,
     public dialog: MatDialog,
     public authService: AuthService,
-    public iconsService: IconsService
+    public iconsService: IconsService,
+    private mapService: MapService
   ) {
     this.icons = this.iconsService.getIcons();
   }
@@ -51,6 +54,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.isAuth = false;
       this.currentUser = null;
     }
+    this.maps = this.mapService.getMaps();
   }
 
   ngOnDestroy(): void {

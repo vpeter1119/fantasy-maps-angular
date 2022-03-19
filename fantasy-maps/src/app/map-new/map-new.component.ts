@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from 'app/auth/auth.service';
 import { IconsService } from 'app/common/icons.service';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './map-new.component.html',
   styleUrls: ['./map-new.component.css']
 })
-export class MapNewComponent implements OnInit {
+export class MapNewComponent implements OnInit, OnChanges {
 
   @Input() mapId: string;
   @Output() markerClicked = new EventEmitter<object>();
@@ -58,6 +58,10 @@ export class MapNewComponent implements OnInit {
     private injector: Injector
   ) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.mapService.setCurrentMapId(this.mapId);
+  }
+  
   ngOnInit(): void {
     // Set up default map options
     this.mapData = this.mapService.getMap(this.mapId);
