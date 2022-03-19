@@ -24,6 +24,19 @@ export class MapService {
   currentMap: string;
   contextPosition: LatLng;
 
+  maps = [
+    {
+      id: 'eriador',
+      title: 'Eriador',
+      width: 8192,
+      height: 8192,
+      minZoom: 2,
+      maxZoom: 5,
+      initZoom: 2,
+      initCenter: [0,0]
+    }
+  ]
+
   constructor(
     private http: HttpClient
   ) { }
@@ -92,6 +105,14 @@ export class MapService {
     //Convert map-specific coordinates to standard Leaflet LatLng
     let latlng = new LatLng(-original[1], original[0]);
     return latlng;
+  }
+
+  getMaps() {
+    return this.maps;
+  }
+
+  getMap(id: string) {
+    return this.maps.find(map => map.id == id);
   }
 
 }
