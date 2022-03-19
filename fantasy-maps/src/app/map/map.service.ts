@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 import { environment } from '../../environments/environment';
+import { GeoJSONOptions, LatLng } from 'leaflet';
 //import { GeoJSON } from './geojson.model';
 
 export interface GeoJsonApiResponse {
@@ -21,6 +22,7 @@ export class MapService {
   geoJsonData: GeoJSON.FeatureCollection;
   geoJsonDataListener = new Subject();
   currentMap: string;
+  contextPosition: LatLng;
 
   constructor(
     private http: HttpClient
@@ -42,6 +44,19 @@ export class MapService {
     return this.geoJsonDataListener.asObservable();
   }
 
+  postGeoJson(data) {
+    const url = this.apiUrl + '?token=Mellon30190113';
+    this.http.post<{ok: boolean}>(url, data).subscribe((response) => {
+      if (environment.debug) console.log('#mapService -> postGeoJson() reponse: ', response);
+      if (response.ok) {
+        this.fetchGeoJson(this.currentMap);
+        return true;
+      } else {
+        return false;
+      }
+    })
+  }
+
   putGeoJson(id: string, data: GeoJSON.GeoJsonProperties) {
     const url = this.apiUrl + '/' + id;
     if (environment.debug) console.log('#mapService -> putGeoJson(',id,data,')');
@@ -54,6 +69,29 @@ export class MapService {
         return false;
       }
     });
+  }
+
+  getContextPosition(): LatLng {
+    return this.contextPosition;
+  }
+  
+  setContextPosition(position: LatLng): void {
+    console.log('#mapService -> setContextPosition() -> position: ', position);
+    this.contextPosition = position;
+  }
+
+  
+
+  LatLngToCoordinates(original: LatLng) {
+    //Convert latLng to map-specific coordinates
+    let coordinates = [original.lng, -original.lat];
+    return coordinates;
+  }
+
+  CoordinatesToLatLng(original: number[]) {
+    //Convert map-specific coordinates to standard Leaflet LatLng
+    let latlng = new LatLng(-original[1], original[0]);
+    return latlng;
   }
 
 }

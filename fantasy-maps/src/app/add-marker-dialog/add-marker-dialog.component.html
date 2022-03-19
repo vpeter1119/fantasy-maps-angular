@@ -1,0 +1,42 @@
+<h3>Add New Marker</h3>
+<form #addMarkerForm="ngForm" (ngSubmit)="onSubmit(addMarkerForm)">
+  <mat-form-field appearance="outline">
+    <mat-label>Title</mat-label>
+    <input matInput
+           type="text"
+           id="title"
+           required
+           ngModel
+           name="title">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Icon</mat-label>
+    <input matInput
+           type="text"
+           id="icon"
+           ngModel
+           name="icon">
+  </mat-form-field>
+  <quill-editor style="height: 300px;" name="desc"  [ngModel]="null"></quill-editor>
+  <mat-form-field appearance="outline">
+    <mat-label>URL</mat-label>
+    <input matInput
+           type="text"
+           id="url"
+           ngModel
+           name="url">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Category</mat-label>
+    <input matInput
+           type="text"
+           id="category"
+           required
+           ngModel
+           name="category">
+  </mat-form-field>
+  <button type="submit" mat-raised-button color="primary" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Save</span>
+    <span *ngIf="isLoading"><mat-spinner [diameter]="32"></mat-spinner></span>
+  </button>
+</form>

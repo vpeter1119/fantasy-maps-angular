@@ -17,6 +17,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+import { QuillModule } from 'ngx-quill'
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
@@ -25,6 +27,8 @@ import { DetailsComponent } from './details/details.component';
 import { AuthComponent } from './auth/auth.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { ContextMenuComponent } from './context-menu/context-menu.component';
+import { AddMarkerDialogComponent } from './add-marker-dialog/add-marker-dialog.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +37,9 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     NavbarComponent,
     DetailsComponent,
     AuthComponent,
-    LoginComponent
+    LoginComponent,
+    ContextMenuComponent,
+    AddMarkerDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -53,7 +59,16 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     MatCardModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    QuillModule.forRoot({
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'script': 'sub'}, { 'script': 'super' }],
+        ]
+      }
+    })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

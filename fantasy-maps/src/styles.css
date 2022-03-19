@@ -5,6 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Handlee&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 @import url('https://nagoshiashumari.github.io/Rpg-Awesome/stylesheets/rpg-awesome.min.css');
+@import '~quill/dist/quill.core.css';
+@import '~quill/dist/quill.bubble.css';
 
 /* Styles */
 
