@@ -2,12 +2,12 @@
      leaflet 
      [leafletOptions]="mapOptions"
      [leafletLayersControl]="layersControl"
-     [leafletLayers]="defaultLayers"
      [(leafletZoom)]="currentZoom"
      [(leafletCenter)]="currentCenter"
      (leafletMapReady)="onMapReady($event)"
      (leafletClick)="onClick($event)"
      (leafletMapZoomEnd)="onZoom($event)">
      <div [leafletLayers]="baseLayer"></div>
-     <div *ngIf="currentZoom >= 3" [leafletLayers]="geoJsonLayer"></div>
+     <!-- <div *ngIf="currentZoom >= 3" [leafletLayers]="geoJsonLayer"></div> -->
+     <div *ngIf="currentZoom >= 3" [leafletLayers]="layers"></div>
 </div>

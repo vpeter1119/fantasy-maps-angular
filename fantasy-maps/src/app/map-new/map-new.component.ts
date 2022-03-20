@@ -23,9 +23,10 @@ export class MapNewComponent implements OnInit, OnChanges {
   mapObject;
   //mapId = 'eriador';
   mapOptions = {};
-  layersControl = {};
-  defaultLayers = [];
+  layersControl;
+  layers;
   geoJsonLayer = [];
+  geoJsonLayerAlt;
   baseLayer = [];
   markers;
   areas;
@@ -95,7 +96,15 @@ export class MapNewComponent implements OnInit, OnChanges {
         onEachFeature: this.BindDetailsEvent.bind(this),
         coordsToLatLng: this.mapService.CoordinatesToLatLng
       });
-      this.geoJsonLayer.push(gJLayer);
+      //this.geoJsonLayer.push(gJLayer);
+      //this.layersControl.addOverlay(gJLayer, 'Map Markers');
+      this.layers = [gJLayer];
+      this.layersControl = {
+        overlays: {
+          'Map Markers': gJLayer
+        }
+      };
+      //this.layersControl.overlays['Map Markers'].push(gJLayer);
     });
   }
 
@@ -113,6 +122,7 @@ export class MapNewComponent implements OnInit, OnChanges {
     this.mapObject.on('contextmenu', <LeafletMouseEvent>(e) => {
       this.openContextPopup(e);
     });
+    //this.mapObject.addLayer(this.layersControl.overlays['Map Markers']);
     //this.mapObject.setMaxBounds(this.SetMapBounds(this.mapObject));
   }
 
@@ -165,9 +175,12 @@ export class MapNewComponent implements OnInit, OnChanges {
       this.zone.run(() => {
         this.markerClicked.emit(data);
       })
-      //this.onClick(e);
-      //this.mapService.setSelectedData(data);
-    }); 
+    });
+    layer.bindTooltip(feature.properties.name, {
+        //permanent: true,
+        direction: 'bottom',
+        offset: [0, -15]
+    });
   }
 
   ConfigureCRS() {
